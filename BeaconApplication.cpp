@@ -38,6 +38,17 @@
 *********************************************************************************************************/
 void BeaconApplication::init()
 {
+    carryDeviceId   = CONFIG.idDevice;
+    workState       = WORKSTATEJOIN;
+    workStateBuf    = WORKSTATEJOIN;
+    workStateCnt    = 0;
+    cntButtonOn     = 0;
+    cntButton       = 0;
+    flgGetSync      = 0;
+    ledMode         = 1;
+    cntButtonMainBuf    = 0;
+    cntButtonMain   = 0;
+    cntButtonHit    = 0;
     bdFreq          = CONFIG.freqSensor;
     BcnDrive.init();
 }
@@ -49,6 +60,9 @@ void BeaconApplication::init()
 void BeaconApplication::appTimerIsr()
 {
     BcnDrive.ledIsr();
+    cntButton++;
+    workStateCnt++;
+    cntButtonMain++;
 }
 
 /*********************************************************************************************************
@@ -79,24 +93,28 @@ void BeaconApplication::sensorBroadCast()
         return ;
     }
     
+    if(ledMode)
+    {
+        BcnDrive.setLedShine(LEDCOLORGREEN, 5);
+    }
     unsigned char dtaSe[10];
     SENSOR.getSensor(dtaSe);
 
     dtaSendRf[0] = CONFIG.idDevice;
-    dtaSendRf[1] = 0;
-    dtaSendRf[2] = FRAMETYPEBC;
-    dtaSendRf[3] = dtaSe[0];
+    dtaSendRf[1] = CONFIG.idSensor;
+    dtaSendRf[2] = 0;
+    dtaSendRf[3] = FRAMETYPEBC;
+    dtaSendRf[4] = dtaSe[0];
 
     for(int i = 0; i<dtaSe[0]; i++)
     {
-        dtaSendRf[i+4] = dtaSe[i+1];
+        dtaSendRf[i+5] = dtaSe[i+1];
     }
-    dtaSendRf[4+dtaSe[0]] = 0;
+    dtaSendRf[5+dtaSe[0]] = 0;
 
-    sendDtaRfbee(5+dtaSe[0], dtaSendRf);
-    sendDtaRfbee(5+dtaSe[0], dtaSendRf);
+    sendDtaRfbee(6+dtaSe[0], dtaSendRf);
 
-    for(int i = 4+dtaSe[0]+4; i>=2; i--)
+    for(int i = 5+dtaSe[0]+4; i>=2; i--)
     {
         dtaSendRf[i] = dtaSendRf[i-2];
     }
@@ -116,7 +134,6 @@ bool BeaconApplication::isTrigger(unsigned char *dta)
 {
     __printlnApp("GET IN ISTRIGGER!");
 
-    //BcnDrive.setLedShine(LEDCOLORRED, 5);
     if(CONFIG.ifSetActuator != 0x55)
     {
         __printlnApp("ACTUATOR NO CONFIG!");
@@ -159,8 +176,11 @@ bool BeaconApplication::isTrigger(unsigned char *dta)
 *********************************************************************************************************/
 void BeaconApplication::Trigger(unsigned char *dta)
 {
-
-    //BcnDrive.setLedShine(LEDCOLORRED, 5);
+    //if(ledMode)
+    //{
+        BcnDrive.setLedShine(LEDCOLORGREEN, 10);
+    //}
+    
     unsigned char nTmp[3];
     /*
      *      IO Actuator
@@ -177,10 +197,10 @@ void BeaconApplication::Trigger(unsigned char *dta)
         {
             case ACTUATOROLED12864:
 
-            nTmp[0] = dta[5];
-            for(int i = 0; i<dta[5]; i++)
+            nTmp[0] = dta[FRAMEBITDATALEN];
+            for(int i = 0; i<dta[FRAMEBITDATALEN]; i++)
             {
-                nTmp[i+1] = dta[6+i];
+                nTmp[i+1] = dta[FRAMEBITDATA+i];
             }
             ACTUATOR.driveActuator(nTmp);
             break;
@@ -266,17 +286,183 @@ void BeaconApplication::TriggerAnalog(unsigned char *dta)
 }
 
 /*********************************************************************************************************
+** Function name:           getBatLev
+** Descriptions:            get battery level
+*********************************************************************************************************/
+unsigned char BeaconApplication::getBatLev()
+{
+    unsigned int uiA2 = analogRead(A2);
+
+    if(uiA2 > BATTERY80VAL)
+    {
+        digitalWrite(PINBATLOW, LOW);
+        return BATTERY80;
+    }
+    else if(uiA2 > BATTERY60VAL)
+    {
+        digitalWrite(PINBATLOW, LOW);
+        return BATTERY60;
+    }
+    else if(uiA2 > BATTERY40VAL)
+    {
+        digitalWrite(PINBATLOW, LOW);
+        return BATTERY40;
+    }
+    else if(uiA2 > BATTERY20VAL)
+    {
+        digitalWrite(PINBATLOW, LOW);
+        return BATTERY20;
+    }
+    else
+    {
+        digitalWrite(PINBATLOW, HIGH);
+        return BATTERYLOW;
+    }
+
+    return 0;
+}
+
+/*********************************************************************************************************
+** Function name:           sendJoin
+** Descriptions:            sendJoin
+*********************************************************************************************************/
+void BeaconApplication::sendJoin()
+{
+    dtaSendRf[0] = CONFIG.idDevice;
+    dtaSendRf[1] = CONFIG.idSensor;
+    dtaSendRf[2] = 0;
+    dtaSendRf[3] = 4;
+    dtaSendRf[4] = 1;
+    dtaSendRf[5] = bdFreq;
+    dtaSendRf[6] = 0;
+    sendDtaRfbee(7, dtaSendRf);
+}
+
+/*********************************************************************************************************
 ** Function name:           sendSync
 ** Descriptions:            tell other devices to sync
 *********************************************************************************************************/
 void BeaconApplication::sendSync()
 {
     dtaSendRf[0] = CONFIG.idDevice;
-    dtaSendRf[1] = 0;
-    dtaSendRf[2] = 5;
-    dtaSendRf[3] = 0;
+    dtaSendRf[1] = CONFIG.idSensor;
+    dtaSendRf[2] = 0;
+    dtaSendRf[3] = 5;
     dtaSendRf[4] = 0;
-    sendDtaRfbee(5, dtaSendRf);
+    dtaSendRf[5] = 0;
+    sendDtaRfbee(6, dtaSendRf);
+}
+
+/*********************************************************************************************************
+** Function name:           sendRfSleep
+** Descriptions:            tell rfbee to sleep
+*********************************************************************************************************/
+void BeaconApplication::sendRfSleep()
+{
+    dtaSendRf[0] = 0x55;
+    dtaSendRf[1] = 0x55;
+    dtaSendRf[2] = 0x55;
+    sendDtaRfbee(3, dtaSendRf);
+    delay(10);
+}
+
+/*********************************************************************************************************
+** Function name:           buttonManage
+** Descriptions:            button
+*********************************************************************************************************/
+void BeaconApplication::buttonManage()
+{
+    unsigned char completeHit = 0;
+    
+    if(cntButton > 10)
+    {
+        cntButton = 0;
+        if(!digitalRead(PINSYSBUTT))                    // button on
+        {
+            cntButtonOn++;
+            cntButtonOff = 0;
+        }
+        else
+        {
+            cntButtonOff++;
+        }
+    }
+
+    if(cntButtonOn > TURNOFFDELAYTIME-5)                // turn off
+    {
+        __printlnAppS("TURN OFF");
+        __printAppS("cntButtonOn = ");
+        __printlnAppS(cntButtonOn);
+
+        cntButtonOn = 0;
+        BcnDrive.beepOn();
+        delay(200);
+        BcnDrive.beepOff();
+
+        BcnDrive.sysPowerOff();
+        delay(3000);
+        BcnDrive.sysPowerOn();
+    }
+    
+    if(cntButtonOff > 3 && cntButtonOn > 1)
+    {
+        cntButtonHit++;
+        cntButtonMainBuf = cntButtonMain;
+        cntButtonOn      = 0;
+        cntButtonOff     = 0;
+        cntButton        = 0;
+    }
+    
+    if(cntButtonHit)
+    {
+        if((cntButtonMain - cntButtonMainBuf) > 500)
+        {
+            completeHit = 1;
+        }
+    }
+    
+    if(completeHit)
+    {
+        completeHit = 0;
+        if(cntButtonHit == 1)           // config
+        {
+            if(workState == WORKSTATECFG)
+            {
+                BcnDrive.setLedShine(LEDCOLORGREEN, 5);
+                stateChange(workStateBuf);
+            }
+            else if(workStateBuf == WORKSTATECARRY || workStateBuf == WORKSTATENARMAL || workStateBuf == WORKSTATEJOIN)
+            {
+                BcnDrive.setLedShine(LEDCOLORRED, 1000000);
+                stateChange(WORKSTATECFG);
+            }
+        }
+        else if(cntButtonHit == 2)      // set led mode
+        {
+            ledMode = 1-ledMode;
+            if(bdFreq != BDF100MS)
+            {
+                stateChange(workStateBuf);
+            }
+        }
+        else if(cntButtonHit == 4)      // CLEAR ALL THE EEPROM DATA AND TURN OFF
+        {
+            for(int i = 0; i<512; i++)
+            {
+                EEPROM.write(i, 0);
+                BcnDrive.setLedShine(LEDCOLORRED, 1);
+                delay(3);
+            }
+            BcnDrive.beepOn();
+            delay(200);
+            BcnDrive.beepOff();
+            BcnDrive.sysPowerOff();
+        }
+        cntButtonOn     = 0;
+        cntButtonOff    = 0;
+        cntButton       = 0;
+        cntButtonHit    = 0;
+    }
 }
 
 /*********************************************************************************************************
@@ -285,8 +471,8 @@ void BeaconApplication::sendSync()
 *********************************************************************************************************/
 void BeaconApplication::carryState()
 {
-  
-#if 0
+    if(carryDeviceId != CONFIG.idDevice)return ;
+
     if(bdFreq == BDF1S)                             // this device is the min id
     {
         if(workStateCnt % 1000 == 10)               // send sync
@@ -294,11 +480,12 @@ void BeaconApplication::carryState()
             workStateCnt++;
             sendSync();
         }
-        else if(workStateCnt % 1000 == 40)          // broadcast sensor value
+        else if(workStateCnt % 1000 == 50)          // broadcast sensor value
         {
             workStateCnt++;
             sensorBroadCast();                      // broadcast
         }
+		
         else if(workStateCnt % 1000 == 100)         // begin to sleep
         {
             sendRfSleep();                          // tell rfbee to sleep 900ms
@@ -324,12 +511,12 @@ void BeaconApplication::carryState()
 
     else if(bdFreq == BDF100MS)
     {
-        if(workStateCnt % 100 == 5 || workStateCnt % 100 == 10)                // send sync
+        if(workStateCnt % 100 == 10)                // send sync
         {
             workStateCnt++;
             sendSync();
         }
-        else if(workStateCnt % 100 == 45)
+        else if(workStateCnt % 100 == 50)
         {
             workStateCnt++;
             sensorBroadCast();                      // broadcast
@@ -339,8 +526,142 @@ void BeaconApplication::carryState()
             workStateCnt = 0;
         }
     }
+}
+
+/*********************************************************************************************************
+** Function name:           supportState
+** Descriptions:            supportState
+*********************************************************************************************************/
+void BeaconApplication::supportState()
+{
+    if(!flgGetSync)return;
     
+    if(bdFreq == BDF1S)
+    {
+        if(workStateCnt % 1000 == 50)               // broadcast sensor value
+        {
+            workStateCnt++;
+            sensorBroadCast();                      // broadcast
+        }
+        else if(workStateCnt % 1000 == 90)          // begin to sleep
+        {
+            flgGetSync = 0;
+#if __SleepMode
+            sendRfSleep();                          // tell rfbee to sleep 900ms
 #endif
+            for(int i = 0; i<9; i++)
+            {
+#if __SleepMode
+                BcnDrive.pwrDown(100);              // sleep 100 ms
+                BcnDrive.wakeUp();
+#else
+                delay(100);
+#endif
+                if(!digitalRead(PINSYSBUTT))        // button ?
+                {
+                    workStateBuf = WORKSTATENARMAL;
+                    delay(10);
+                    stateChange(WORKSTATEBUTTON);
+                    BcnDrive.rLedCnt = BcnDrive.rLedCnt>100 ? BcnDrive.rLedCnt-100 : 0;
+                    BcnDrive.gLedCnt = BcnDrive.gLedCnt>100 ? BcnDrive.gLedCnt-100 : 0;
+                    break;
+                }
+                BcnDrive.rLedCnt = BcnDrive.rLedCnt>100 ? BcnDrive.rLedCnt-100 : 0;
+                BcnDrive.gLedCnt = BcnDrive.gLedCnt>100 ? BcnDrive.gLedCnt-100 : 0;
+            }
+            workStateCnt  = 0;
+        }
+    }
+    else if(bdFreq == BDF100MS)
+    {
+        if(workStateCnt % 100 == 50)               // broadcast sensor value
+        {
+            workStateCnt++;
+            sensorBroadCast();                      // broadcast
+        }
+        else if(workStateCnt % 100 >= 95)
+        {
+            workStateCnt = 0;
+            flgGetSync   = 0;
+        }
+    }
+}
+/*********************************************************************************************************
+** Function name:           workStateMachine
+** Descriptions:            workStateMachine
+*********************************************************************************************************/
+void BeaconApplication::workStateMachine()
+{
+
+    if(CONFIG.ifSetDevice != 0x55 && workState != WORKSTATECFG)
+    {
+        return ;
+    }
+
+    switch(workState)
+    {
+        /***********************************************************************************************
+        ******************************************* WORKSTATEJOIN **************************************
+        ***********************************************************************************************/
+        case WORKSTATEJOIN:
+
+        if(CONFIG.ifSetDevice != 0x55)                      // device not config
+        {
+            return ;
+        }
+
+        if(workStateCnt < 1500)                             // send join for 2s
+        {
+            if(workStateCnt % 60 == 0)                      // send join per 60ms
+            {
+                workStateCnt++;
+                sendJoin();
+                BcnDrive.setLedShine(LEDCOLORRED, 5);
+            }
+        }
+        else
+        {
+            workStateBuf = WORKSTATEJOIN;
+            stateChange(WORKSTATECARRY);
+        }
+
+        break;
+
+        /***********************************************************************************************
+        ******************************************* WORKSTATECARRY *************************************
+        ***********************************************************************************************/
+        case WORKSTATECARRY:
+        carryState();
+        break;
+
+        /***********************************************************************************************
+        ******************************************* WORKSTATENARMAL ************************************
+        ***********************************************************************************************/
+        case WORKSTATENARMAL:
+        supportState();
+        break;
+
+        /***********************************************************************************************
+        ********************************************WORKSTATECFG****************************************
+        ***********************************************************************************************/
+        case WORKSTATECFG:
+
+        CONFIG.lightConfig();
+        
+        break;
+
+        default:
+        ;
+    }
+}
+
+/*********************************************************************************************************
+** Function name:           stateChange
+** Descriptions:            goto state
+*********************************************************************************************************/
+void BeaconApplication::stateChange(unsigned char state)
+{
+    workState = state;
 }
 
 BeaconApplication BeaconApp;

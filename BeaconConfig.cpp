@@ -41,6 +41,8 @@
 void BeaconConfig::init()
 {
     __printlnCfg("CONFIG: INIT!");
+    
+    ifCloud     = 0;
 
     freqSensor  = EEPROM.read(EEPADDFREQBROADCAST);
     freqSensor  = freqSensor == 0 ? BDF100MS : freqSensor;
@@ -129,6 +131,19 @@ void BeaconConfig::init()
 
 }
 
+/*********************************************************************************************************
+** Function name:           isLightConfig
+** Descriptions:            if get data from light sensor
+*********************************************************************************************************/
+unsigned char BeaconConfig::isLightConfig()
+{
+    if(LightCom1.isData())
+    {
+        return 1;
+    }
+    return 0;
+
+}
 
 /*********************************************************************************************************
 ** Function name:           lightConfig
@@ -136,7 +151,7 @@ void BeaconConfig::init()
 *********************************************************************************************************/
 bool BeaconConfig::lightConfig()
 {
-#if 0
+    
     if(!LightCom1.isData())
     {
         return 0;
@@ -211,7 +226,6 @@ bool BeaconConfig::lightConfig()
     }
 	else if(lenLight > 0)
 	{
-		BeaconApp.sendDtaRfbee(lenLight, dtaLight);
         BcnDrive.setLedShine(LEDCOLORGREEN, 50);
 		return 0;
 	}
@@ -224,7 +238,6 @@ bool BeaconConfig::lightConfig()
             __printCfg("\t");
         }
         __printlnCfg();
-        BeaconApp.sendDtaRfbee(lenLight, dtaLight);
         BcnDrive.setLedShine(LEDCOLORGREEN, 50);
         return 0;
     }
@@ -238,8 +251,6 @@ bool BeaconConfig::lightConfig()
     __printlnCfg("init Actuator over!");
     BeaconApp.init();
     __printlnCfg("init Application over!");
-    
-#endif
     return 1;
 }
 

@@ -35,6 +35,8 @@ class BeaconConfig{
     unsigned char idSensor;             // id of sensor
     unsigned char freqSensor;           // 
     
+    unsigned char ifCloud;              // if there is a cloud in the net
+    
     unsigned char ifSetActuator;        // if config actuator
     unsigned char idActuator;           // id of actuator
     unsigned char nTC;                  // number of trigger conditions
