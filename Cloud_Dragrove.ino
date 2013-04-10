@@ -118,6 +118,7 @@ unsigned char checkGoodDta(unsigned char *dta)
 *********************************************************************************************************/
 void rfDtaProc()
 {
+
     if(__GstringComplete == 1 && checkGoodDta(__GdtaUart))                      // if serial get data
     {
         if(__GdtaUart[FRAMEBITFRAME] == 4)                                      // other device join
@@ -178,17 +179,17 @@ void setup()
 void loop()
 {
     rfDtaProc();                                // data process
-    BeaconApp.buttonManage();                   // button manage
+    //BeaconApp.buttonManage();                   // button manage
     BeaconApp.workStateMachine();               // state machine
-    BeaconApp.getBatLev();                      // get batary level
-    serialEvent1();                             // check serial data
+    //BeaconApp.getBatLev();                      // get batary level
+    mySerialEvent();                             // check serial data
 }
 
 /*********************************************************************************************************
 ** Function name:           serialEvent1
 ** Descriptions:            Serial event
 *********************************************************************************************************/
-void serialEvent1() 
+void mySerialEvent() 
 {
     while (Serial.available())
     {

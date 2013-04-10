@@ -63,6 +63,7 @@ void BeaconApplication::appTimerIsr()
     cntButton++;
     workStateCnt++;
     cntButtonMain++;
+    
 }
 
 /*********************************************************************************************************
@@ -377,7 +378,7 @@ void BeaconApplication::buttonManage()
     if(cntButton > 10)
     {
         cntButton = 0;
-        if(!digitalRead(PINSYSBUTT))                    // button on
+        if(digitalRead(PINSYSBUTT))                    // button on
         {
             cntButtonOn++;
             cntButtonOff = 0;
@@ -614,7 +615,7 @@ void BeaconApplication::workStateMachine()
             return ;
         }
 
-        if(workStateCnt < 1500)                             // send join for 2s
+        if(workStateCnt < 2500)                             // send join for 2s
         {
             if(workStateCnt % 60 == 0)                      // send join per 60ms
             {
