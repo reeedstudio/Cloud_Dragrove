@@ -491,8 +491,12 @@ void BeaconApplication::carryState()
             sendRfSleep();                          // tell rfbee to sleep 900ms
             for(int i = 0; i<9; i++)
             {
+#if __SleepMode
                 BcnDrive.pwrDown(105);              // sleep 100 ms
                 BcnDrive.wakeUp();
+#else
+                delay(105);
+#endif
                 if(!digitalRead(PINSYSBUTT))        // button ?
                 {
                     workStateBuf = WORKSTATECARRY;

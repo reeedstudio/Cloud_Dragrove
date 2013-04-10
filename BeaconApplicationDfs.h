@@ -23,7 +23,7 @@
 #define __BEACONAPPLICATIONDFS_H__
 
 #define __DebugApp                  0                   // debug i2c
-#define __DebugAppSerial            0                   // debug Serial1
+#define __DebugAppSerial            0                   // debug Serial
 #define __SleepMode                 0                   // sleep mode
 
 #define _XBEE                       1
@@ -35,9 +35,9 @@
 #define BAUDRATE                    38400U
 #endif
 
-#if __DebugAppSerial                                    // debug use serial1
-#define __printAppS(x)              Serial1.print(x)
-#define __printlnAppS(x)            Serial1.println(x)
+#if __DebugAppSerial                                    // debug use Serial
+#define __printAppS(x)              Serial.print(x)
+#define __printlnAppS(x)            Serial.println(x)
 #else
 #define __printAppS(x)
 #define __printlnAppS(x)
@@ -51,7 +51,7 @@
 #define __printlnApp(x)
 #endif
 
-#define SendByteToRfbee             Serial1.write       // send a byte to Serial1
+#define SendByteToRfbee             Serial.write       // send a byte to Serial
 
 #define TURNOFFDELAYTIME            80                  // when press the button for xx*10 ms, turn off the system
 

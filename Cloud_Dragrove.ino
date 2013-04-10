@@ -158,23 +158,15 @@ void setup()
     BcnDrive.sysPowerOn();                      // power on
     delay(500);
     
-    Serial1.begin(57600);                       // Serial1, to send/rev data from RFBee
-    while(!Serial1);                            // Unitll Serial1 init over
+    Serial.begin(57600);                       // Serial, to send/rev data from RFBee
+
+    Serial.println("Serial init over");
     
-    LightCom1.init(12);                         // light com  D12: input
     CONFIG.init();                              // init config
     SENSOR.init(CONFIG.idSensor);               // init sensor
     ACTUATOR.init(CONFIG.idActuator);           // init actuator
     BeaconApp.init();                           // init application
-    
-    while(1)                                    // while button release
-    {
-        if(digitalRead(PINSYSBUTT))
-        {
-            break;
-        }
-        delay(10);
-    }
+
     Timer1.initialize(1000);                    // set a timer of length 1ms
     Timer1.attachInterrupt( timer1ISR );        // attach the service routine here
 }
@@ -194,13 +186,13 @@ void loop()
 
 /*********************************************************************************************************
 ** Function name:           serialEvent1
-** Descriptions:            Serial1 event
+** Descriptions:            Serial event
 *********************************************************************************************************/
 void serialEvent1() 
 {
-    while (Serial1.available())
+    while (Serial.available())
     {
-        __GdtaUart[__GdtaUartLen++] = (unsigned char)Serial1.read();
+        __GdtaUart[__GdtaUartLen++] = (unsigned char)Serial.read();
         __GstringComplete =   (__GdtaUart[__GdtaUartLen-1] == FRAMEEND2) ? 1 : __GstringComplete;
         __GdtaUartLen = (__GdtaUartLen > 45) ? 0 :  __GdtaUartLen;
     }
