@@ -9,7 +9,7 @@
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-
+  
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -84,7 +84,7 @@ unsigned char checkGoodDta(unsigned char *dta)
     unsigned char ioffset = 0;
     for(ioffset = 0; ioffset < __GdtaUartLen; ioffset++)
     {
-        if(dta[ioffset] == FRAMESTART1)
+        if(dta[ioffset] == FRAMESTART1 && dta[ioffset+1] == FRAMESTART2)
         {
             break;
         }
@@ -157,9 +157,11 @@ void setup()
     
     BcnDrive.init();
     BcnDrive.sysPowerOn();                      // power on
+    BcnDrive.rfBeePowerOff();
     delay(500);
+    BcnDrive.rfBeePowerOff();
     
-    Serial.begin(57600);                       // Serial, to send/rev data from RFBee
+    Serial.begin(57600);                        // Serial, to send/rev data from RFBee
 
     Serial.println("Serial init over");
     
