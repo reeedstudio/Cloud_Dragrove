@@ -399,56 +399,6 @@ void BeaconApplication::carryState()
 }
 
 /*********************************************************************************************************
-** Function name:           supportState
-** Descriptions:            supportState
-*********************************************************************************************************/
-void BeaconApplication::supportState()
-{
-    if(!flgGetSync)return;
-    
-    if(bdFreq == BDF1S)
-    {
-        if(workStateCnt % 1000 == 50)               // broadcast sensor value
-        {
-            workStateCnt++;
-            sensorBroadCast();                      // broadcast
-        }
-        else if(workStateCnt % 1000 == 90)          // begin to sleep
-        {
-            flgGetSync = 0;
-            for(int i = 0; i<9; i++)
-            {
-                delay(100);
-                if(!digitalRead(PINSYSBUTT))        // button ?
-                {
-                    workStateBuf = WORKSTATENARMAL;
-                    delay(10);
-                    stateChange(WORKSTATEBUTTON);
-                    BcnDrive.rLedCnt = BcnDrive.rLedCnt>100 ? BcnDrive.rLedCnt-100 : 0;
-                    BcnDrive.gLedCnt = BcnDrive.gLedCnt>100 ? BcnDrive.gLedCnt-100 : 0;
-                    break;
-                }
-                BcnDrive.rLedCnt = BcnDrive.rLedCnt>100 ? BcnDrive.rLedCnt-100 : 0;
-                BcnDrive.gLedCnt = BcnDrive.gLedCnt>100 ? BcnDrive.gLedCnt-100 : 0;
-            }
-            workStateCnt  = 0;
-        }
-    }
-    else if(bdFreq == BDF100MS)
-    {
-        if(workStateCnt % 100 == 50)               // broadcast sensor value
-        {
-            workStateCnt++;
-            sensorBroadCast();                      // broadcast
-        }
-        else if(workStateCnt % 100 >= 95)
-        {
-            workStateCnt = 0;
-            flgGetSync   = 0;
-        }
-    }
-}
-/*********************************************************************************************************
 ** Function name:           workStateMachine
 ** Descriptions:            workStateMachine
 *********************************************************************************************************/
@@ -494,13 +444,6 @@ void BeaconApplication::workStateMachine()
         ***********************************************************************************************/
         case WORKSTATECARRY:
         carryState();
-        break;
-
-        /***********************************************************************************************
-        ******************************************* WORKSTATENARMAL ************************************
-        ***********************************************************************************************/
-        case WORKSTATENARMAL:
-        supportState();
         break;
 
         /***********************************************************************************************

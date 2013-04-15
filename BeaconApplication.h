@@ -50,14 +50,12 @@ public:
 
 private:
     void sendJoin();                        // tell other devices a minId join
-
     void TriggerAnalog(unsigned char *dta); // trigger when analog
     void sensorBroadCast();                 // sensor broadcast 
     
     void carryState();                      // carry state
     void supportState();                    // supportState
     
-
 public:
     
     void init();                            // init
