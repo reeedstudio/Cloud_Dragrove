@@ -340,19 +340,6 @@ void BeaconApplication::sendJoin()
 }
 
 /*********************************************************************************************************
-** Function name:           sendRfSleep
-** Descriptions:            tell rfbee to sleep
-*********************************************************************************************************/
-void BeaconApplication::sendRfSleep()
-{
-    dtaSendRf[0] = 0x55;
-    dtaSendRf[1] = 0x55;
-    dtaSendRf[2] = 0x55;
-    sendDtaRfbee(3, dtaSendRf);
-    delay(10);
-}
-
-/*********************************************************************************************************
 ** Function name:           carryState
 ** Descriptions:            carryState
 *********************************************************************************************************/
@@ -374,15 +361,9 @@ void BeaconApplication::carryState()
 		
         else if(workStateCnt % 1000 == 100)         // begin to sleep
         {
-            sendRfSleep();                          // tell rfbee to sleep 900ms
             for(int i = 0; i<9; i++)
             {
-#if __SleepMode
-                BcnDrive.pwrDown(105);              // sleep 100 ms
-                BcnDrive.wakeUp();
-#else
                 delay(105);
-#endif
                 if(!digitalRead(PINSYSBUTT))        // button ?
                 {
                     workStateBuf = WORKSTATECARRY;
@@ -435,17 +416,9 @@ void BeaconApplication::supportState()
         else if(workStateCnt % 1000 == 90)          // begin to sleep
         {
             flgGetSync = 0;
-#if __SleepMode
-            sendRfSleep();                          // tell rfbee to sleep 900ms
-#endif
             for(int i = 0; i<9; i++)
             {
-#if __SleepMode
-                BcnDrive.pwrDown(100);              // sleep 100 ms
-                BcnDrive.wakeUp();
-#else
                 delay(100);
-#endif
                 if(!digitalRead(PINSYSBUTT))        // button ?
                 {
                     workStateBuf = WORKSTATENARMAL;

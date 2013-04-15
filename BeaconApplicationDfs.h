@@ -24,7 +24,6 @@
 
 #define __DebugApp                  0                   // debug i2c
 #define __DebugAppSerial            0                   // debug Serial
-#define __SleepMode                 0                   // sleep mode
 
 #define _XBEE                       1
 #define _RFBEE                      0
