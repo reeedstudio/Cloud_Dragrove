@@ -25,7 +25,6 @@
 #include <BeaconActuator.h>
 #include <BeaconActuatorDfs.h>
 #include <BeaconSensorDfs.h>
-#include <LightCom.h>
 #include <I2C_Uart.h>
 #include <BeaconDrive.h>
 
@@ -132,26 +131,13 @@ void BeaconConfig::init()
 }
 
 /*********************************************************************************************************
-** Function name:           isLightConfig
-** Descriptions:            if get data from light sensor
-*********************************************************************************************************/
-unsigned char BeaconConfig::isLightConfig()
-{
-    if(LightCom1.isData())
-    {
-        return 1;
-    }
-    return 0;
-
-}
-
-/*********************************************************************************************************
-** Function name:           lightConfig
+** Function name:           cloudConfig
 ** Descriptions:            config
 *********************************************************************************************************/
-bool BeaconConfig::lightConfig()
+bool BeaconConfig::cloudConfig()
 {
-    
+    return 1;
+#if 0
     if(!LightCom1.isData())
     {
         return 0;
@@ -252,6 +238,8 @@ bool BeaconConfig::lightConfig()
     BeaconApp.init();
     __printlnCfg("init Application over!");
     return 1;
+#endif
+
 }
 
 BeaconConfig CONFIG;

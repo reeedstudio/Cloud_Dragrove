@@ -25,9 +25,7 @@
 #include <BeaconActuator.h>
 #include <BeaconDrive.h>
 #include <TimerOne.h>
-#include <LightCom.h>
 #include <Wire.h>
-#include <Sleep_n0m1.h>
 #include <SeeedOLED.h>
 
 #include "BeaconApplication.h"
@@ -55,10 +53,7 @@ unsigned char __GstringComplete    = 0;         // if get data
 void timer1ISR()
 {
     BeaconApp.appTimerIsr();                    // application isr
-    if(BeaconApp.workState == WORKSTATECFG)
-    {
-        LightCom1.TIMEISR();                    // light com isr
-    }
+
 }
 
 void just_for_fun(unsigned char *dta)

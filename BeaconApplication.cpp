@@ -451,7 +451,7 @@ void BeaconApplication::workStateMachine()
         ***********************************************************************************************/
         case WORKSTATECFG:
 
-        CONFIG.lightConfig();
+        CONFIG.cloudConfig();
         
         break;
 
