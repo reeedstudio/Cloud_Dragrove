@@ -50,7 +50,6 @@ public:
 
 private:
     void sendJoin();                        // tell other devices a minId join
-    void sendSync();                        // tell other devices to sync
     void sendRfSleep();                     // tell rfbee to sleep
 
     void TriggerAnalog(unsigned char *dta); // trigger when analog

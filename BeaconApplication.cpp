@@ -340,21 +340,6 @@ void BeaconApplication::sendJoin()
 }
 
 /*********************************************************************************************************
-** Function name:           sendSync
-** Descriptions:            tell other devices to sync
-*********************************************************************************************************/
-void BeaconApplication::sendSync()
-{
-    dtaSendRf[0] = CONFIG.idDevice;
-    dtaSendRf[1] = CONFIG.idSensor;
-    dtaSendRf[2] = 0;
-    dtaSendRf[3] = 5;
-    dtaSendRf[4] = 0;
-    dtaSendRf[5] = 0;
-    sendDtaRfbee(6, dtaSendRf);
-}
-
-/*********************************************************************************************************
 ** Function name:           sendRfSleep
 ** Descriptions:            tell rfbee to sleep
 *********************************************************************************************************/
@@ -380,7 +365,6 @@ void BeaconApplication::carryState()
         if(workStateCnt % 1000 == 10)               // send sync
         {
             workStateCnt++;
-            sendSync();
         }
         else if(workStateCnt % 1000 == 50)          // broadcast sensor value
         {
@@ -420,7 +404,6 @@ void BeaconApplication::carryState()
         if(workStateCnt % 100 == 10)                // send sync
         {
             workStateCnt++;
-            sendSync();
         }
         else if(workStateCnt % 100 == 50)
         {
