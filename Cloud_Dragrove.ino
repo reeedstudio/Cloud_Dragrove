@@ -181,9 +181,7 @@ void setup()
 void loop()
 {
     rfDtaProc();                                // data process
-    //BeaconApp.buttonManage();                   // button manage
     BeaconApp.workStateMachine();               // state machine
-    //BeaconApp.getBatLev();                      // get batary level
     mySerialEvent();                             // check serial data
 }
 

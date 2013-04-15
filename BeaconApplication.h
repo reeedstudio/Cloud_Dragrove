@@ -69,7 +69,6 @@ public:
     bool isTrigger(unsigned char *dta);     // if get trigger
     void Trigger(unsigned char *dta);       // trigger
     unsigned char getBatLev();              // get battery level
-    void buttonManage();                    // button
     void workStateMachine();                // working state machine
     void stateChange(unsigned char state);  // change work state
     
