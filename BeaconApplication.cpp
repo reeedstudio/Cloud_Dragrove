@@ -287,43 +287,6 @@ void BeaconApplication::TriggerAnalog(unsigned char *dta)
 }
 
 /*********************************************************************************************************
-** Function name:           getBatLev
-** Descriptions:            get battery level
-*********************************************************************************************************/
-unsigned char BeaconApplication::getBatLev()
-{
-    unsigned int uiA2 = analogRead(A2);
-
-    if(uiA2 > BATTERY80VAL)
-    {
-        digitalWrite(PINBATLOW, LOW);
-        return BATTERY80;
-    }
-    else if(uiA2 > BATTERY60VAL)
-    {
-        digitalWrite(PINBATLOW, LOW);
-        return BATTERY60;
-    }
-    else if(uiA2 > BATTERY40VAL)
-    {
-        digitalWrite(PINBATLOW, LOW);
-        return BATTERY40;
-    }
-    else if(uiA2 > BATTERY20VAL)
-    {
-        digitalWrite(PINBATLOW, LOW);
-        return BATTERY20;
-    }
-    else
-    {
-        digitalWrite(PINBATLOW, HIGH);
-        return BATTERYLOW;
-    }
-
-    return 0;
-}
-
-/*********************************************************************************************************
 ** Function name:           sendJoin
 ** Descriptions:            sendJoin
 *********************************************************************************************************/
@@ -358,7 +321,6 @@ void BeaconApplication::carryState()
             workStateCnt++;
             sensorBroadCast();                      // broadcast
         }
-		
         else if(workStateCnt % 1000 == 100)         // begin to sleep
         {
             for(int i = 0; i<9; i++)
@@ -369,8 +331,8 @@ void BeaconApplication::carryState()
                     workStateBuf = WORKSTATECARRY;
                     delay(10);
                     stateChange(WORKSTATEBUTTON);
-                    BcnDrive.rLedCnt = BcnDrive.rLedCnt>100 ? BcnDrive.rLedCnt-100 : 0;
-                    BcnDrive.gLedCnt = BcnDrive.gLedCnt>100 ? BcnDrive.gLedCnt-100 : 0;
+                    BcnDrive.rLedCnt = BcnDrive.rLedCnt > 100 ? BcnDrive.rLedCnt-100 : 0;
+                    BcnDrive.gLedCnt = BcnDrive.gLedCnt > 100 ? BcnDrive.gLedCnt-100 : 0;
                     break;
                 }
                 BcnDrive.rLedCnt = BcnDrive.rLedCnt>100 ? BcnDrive.rLedCnt-100 : 0;
@@ -445,12 +407,12 @@ void BeaconApplication::workStateMachine()
         case WORKSTATECARRY:
         carryState();
         break;
-
+        
         /***********************************************************************************************
         ********************************************WORKSTATECFG****************************************
         ***********************************************************************************************/
         case WORKSTATECFG:
-
+        
         CONFIG.cloudConfig();
         
         break;
