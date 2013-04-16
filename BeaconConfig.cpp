@@ -183,7 +183,6 @@ bool BeaconConfig::cloudConfig()
         EEPROM.write(EEPADDTCSTART+EEPOFFSETACDATA, dtaLight[7]);
         EEPROM.write(EEPADDTCSTART+EEPOFFSETACDATA+1, dtaLight[8]);
 
-
     }       
     else if((dtaLight[0] == 0x51) && (lenLight == 12))                   // config all
     {

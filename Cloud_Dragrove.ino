@@ -53,7 +53,6 @@ unsigned char __GstringComplete    = 0;         // if get data
 void timer1ISR()
 {
     BeaconApp.appTimerIsr();                    // application isr
-
 }
 
 void just_for_fun(unsigned char *dta)
@@ -131,7 +130,6 @@ void rfDtaProc()
             {
                 BeaconApp.workStateCnt = 0;
                 BeaconApp.flgGetSync   = 1;
-                
             }
         }
         else if((BeaconApp.workState == WORKSTATECARRY || BeaconApp.workState == WORKSTATENARMAL) && BeaconApp.isTrigger(__GdtaUart))     // if the data trigger
@@ -177,7 +175,7 @@ void loop()
 {
     rfDtaProc();                                // data process
     BeaconApp.workStateMachine();               // state machine
-    mySerialEvent();                             // check serial data
+    mySerialEvent();                            // check serial data
 }
 
 /*********************************************************************************************************
