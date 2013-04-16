@@ -27,10 +27,10 @@
 #include <BeaconDrive.h>
 #include <EEPROM.h>
 
-#include "BeaconApplication.h"
-#include "BeaconConfig.h"
-#include "BeaconApplicationDfs.h"
-#include "BeaconConfigDfs.h"
+#include "CloudApplication.h"
+#include "CloudConfig.h"
+#include "CloudApplicationDfs.h"
+#include "CloudConfigDfs.h"
 
 /*********************************************************************************************************
 ** Function name:           init

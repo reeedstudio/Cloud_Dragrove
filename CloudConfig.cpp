@@ -28,10 +28,10 @@
 #include <I2C_Uart.h>
 #include <BeaconDrive.h>
 
-#include "BeaconApplication.h"
-#include "BeaconConfig.h"
-#include "BeaconConfigDfs.h"
-#include "BeaconApplicationDfs.h"
+#include "CloudApplication.h"
+#include "CloudConfig.h"
+#include "CloudConfigDfs.h"
+#include "CloudApplicationDfs.h"
 
 /*********************************************************************************************************
 ** Function name:           init

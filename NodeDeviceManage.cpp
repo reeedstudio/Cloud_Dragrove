@@ -39,10 +39,19 @@ void NodeManage::init()
 ** Function name:           addDevice
 ** Descriptions:            add a device
 *********************************************************************************************************/
+unsigned char NodeManage::getDeviceNum()
+{
+    return atomNum;
+}
+
+/*********************************************************************************************************
+** Function name:           addDevice
+** Descriptions:            add a device
+*********************************************************************************************************/
 unsigned char NodeManage::addDevice(unsigned char id)
 {
     if(checkId(id))return checkId(id);          // certain id esit
-    atomId[atomNum--] = id;
+    atomId[atomNum++] = id;
 
 }
 
@@ -54,8 +63,6 @@ unsigned char NodeManage::delDevice(unsigned char id)
 {
     unsigned char location      = checkId(id);
     if(location==0)return 0;
-    
-    // to do
     
     return 1;
 }

@@ -19,8 +19,8 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef __BEACONAPPLICATIONDFS_H__
-#define __BEACONAPPLICATIONDFS_H__
+#ifndef __CLOUDAPPLICATIONDFS_H__
+#define __CLOUDAPPLICATIONDFS_H__
 
 #define __DebugApp                  0                   // debug i2c
 #define __DebugAppSerial            0                   // debug Serial

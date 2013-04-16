@@ -19,10 +19,10 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef __BEACONAPPLICATION_H__
-#define __BEACONAPPLICATION_H__
+#ifndef __CLOUDAPPLICATION_H__
+#define __CLOUDAPPLICATION_H__
 
-#include "BeaconApplicationDfs.h"
+#include "CloudApplicationDfs.h"
 
 class BeaconApplication{
 

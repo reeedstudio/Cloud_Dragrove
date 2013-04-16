@@ -28,9 +28,9 @@
 #include <Wire.h>
 #include <SeeedOLED.h>
 
-#include "BeaconApplication.h"
-#include "BeaconConfig.h"
-#include "BeaconApplicationDfs.h"
+#include "CloudApplication.h"
+#include "CloudConfig.h"
+#include "CloudApplicationDfs.h"
 
 #define __DebugIno      0
 

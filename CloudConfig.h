@@ -19,10 +19,10 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef __BEACONCONFIG_H__
-#define __BEACONCONFIG_H__
+#ifndef __CLOUDCONFIG_H__
+#define __CLOUDCONFIG_H__
 
-#include "BeaconConfigDfs.h"
+#include "CloudConfigDfs.h"
 
 class BeaconConfig{
     
