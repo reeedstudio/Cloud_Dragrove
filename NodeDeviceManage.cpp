@@ -52,9 +52,9 @@ unsigned char NodeManage::getDeviceNum()
 *********************************************************************************************************/
 unsigned char NodeManage::addDevice(unsigned char id)
 {
+
     if(checkId(id))return checkId(id);          // certain id esit
     atomId[atomNum++] = id;
-
 }
 
 /*********************************************************************************************************
@@ -112,6 +112,8 @@ unsigned char NodeManage::popDta(unsigned char id, int *dta)
     getAtomValue[location-1] = 0;
     return 1;  
 }
+
+NodeManage NODE;
 
 /*********************************************************************************************************
   END FILE

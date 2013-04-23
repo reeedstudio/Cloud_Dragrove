@@ -175,10 +175,10 @@ bool BeaconApplication::isTrigger(unsigned char *dta)
 *********************************************************************************************************/
 void BeaconApplication::Trigger(unsigned char *dta)
 {
-    //if(ledMode)
-    //{
+    if(ledMode)
+    {
         BcnDrive.setLedShine(LEDCOLORGREEN, 10);
-    //}
+    }
     
     unsigned char nTmp[3];
     /*
