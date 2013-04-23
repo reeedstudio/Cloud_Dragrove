@@ -75,7 +75,6 @@
 #define ACTIONTYPEOF                2                                   // OFF
 #define ACTIONTYPEOUTPUT            3                                   // just output, such display a data!
 
-
 #endif
 
 /*********************************************************************************************************

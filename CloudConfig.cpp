@@ -53,7 +53,8 @@ void BeaconConfig::init()
         return;
     }
 
-    idDevice = EEPROM.read(EEPADDDEVICEID);
+    //idDevice = EEPROM.read(EEPADDDEVICEID);
+    idDevice = 0x80;
     __printCfg("CONFIG: idDevice = ");
     __printlnCfg(idDevice);
     /*
