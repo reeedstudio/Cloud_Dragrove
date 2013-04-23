@@ -30,7 +30,7 @@
 
 #include "CloudApplication.h"
 #include "CloudConfig.h"
-#include "CloudApplicationDfs.h"
+#include "CloudGlobalDfs.h"
 
 #define __DebugIno      0
 

@@ -29,8 +29,7 @@
 
 #include "CloudApplication.h"
 #include "CloudConfig.h"
-#include "CloudApplicationDfs.h"
-#include "CloudConfigDfs.h"
+#include "CloudGlobalDfs.h"
 
 /*********************************************************************************************************
 ** Function name:           init

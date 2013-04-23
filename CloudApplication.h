@@ -22,8 +22,6 @@
 #ifndef __CLOUDAPPLICATION_H__
 #define __CLOUDAPPLICATION_H__
 
-#include "CloudApplicationDfs.h"
-
 class BeaconApplication{
 
 private:

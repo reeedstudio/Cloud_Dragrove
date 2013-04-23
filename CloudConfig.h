@@ -22,7 +22,7 @@
 #ifndef __CLOUDCONFIG_H__
 #define __CLOUDCONFIG_H__
 
-#include "CloudConfigDfs.h"
+#include "CloudGlobalDfs.h"
 
 class BeaconConfig{
     
