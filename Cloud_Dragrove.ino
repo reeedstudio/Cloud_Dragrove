@@ -22,7 +22,7 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <BeaconSensor.h>
-#include <BeaconActuator.h>
+//#include <BeaconActuator.h>
 #include <BeaconDrive.h>
 #include <TimerOne.h>
 #include <Wire.h>
@@ -120,8 +120,6 @@ void rfDtaProc()
             BeaconApp.carryDeviceId  = __GdtaUart[FRAMEBITSRCID];
             BeaconApp.workStateCnt   = 0;
             BeaconApp.workStateBuf   = BeaconApp.workState;
-            BeaconApp.bdFreq         = __GdtaUart[FRAMEBITDATA];                // change freq
-            EEPROM.write(EEPADDFREQBROADCAST, BeaconApp.bdFreq);                // write to eeprom
         }
         else if((BeaconApp.workState == WORKSTATECARRY || BeaconApp.workState == WORKSTATENARMAL))     // if the data trigger
         {
@@ -145,17 +143,16 @@ void setup()
     delay(500);
     BcnDrive.rfBeePowerOff();
     
-    Serial.begin(57600);                        // Serial, to send/rev data from RFBee
-
+    Serial.begin(BAUDRATE);                     // Serial, to send/rev data from RFBee
+    
     Serial.println("Serial init over");
     
     CONFIG.init();                              // init config
     SENSOR.init(CONFIG.idSensor);               // init sensor
-    ACTUATOR.init(CONFIG.idActuator);           // init actuator
     BeaconApp.init();                           // init application
-
+    
     Timer1.initialize(1000);                    // set a timer of length 1ms
-    Timer1.attachInterrupt( timer1ISR );        // attach the service routine here
+    Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
 }
 
 /*********************************************************************************************************

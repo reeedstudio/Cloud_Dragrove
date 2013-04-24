@@ -43,9 +43,7 @@ void BeaconApplication::init()
     workStateCnt    = 0;
    
     flgGetSync      = 0;
-    ledMode         = 1;
 
-    bdFreq          = CONFIG.freqSensor;
     BcnDrive.init();
 }
 
@@ -87,11 +85,8 @@ void BeaconApplication::sensorBroadCast()
     {
         return ;
     }
+    BcnDrive.setLedShine(LEDCOLORGREEN, 5);
 
-    if(ledMode)
-    {
-        BcnDrive.setLedShine(LEDCOLORGREEN, 5);
-    }
     unsigned char dtaSe[10];
     SENSOR.getSensor(dtaSe);
 
@@ -117,14 +112,7 @@ void BeaconApplication::sensorBroadCast()
 *********************************************************************************************************/
 void BeaconApplication::sendJoin()
 {
-    dtaSendRf[0] = CONFIG.idDevice;
-    dtaSendRf[1] = CONFIG.idSensor;
-    dtaSendRf[2] = 0;
-    dtaSendRf[3] = 4;
-    dtaSendRf[4] = 1;
-    dtaSendRf[5] = bdFreq;
-    dtaSendRf[6] = 0;
-    sendDtaRfbee(7, dtaSendRf);
+    // add code here
 }
 
 /*********************************************************************************************************
@@ -135,8 +123,7 @@ void BeaconApplication::carryState()
 {
     if(carryDeviceId != CONFIG.idDevice)return ;
 
-    if(bdFreq == BDF1S)                             // this device is the min id
-    {
+
         if(workStateCnt % 1000 == 10)               // send sync
         {
             workStateCnt++;
@@ -146,7 +133,6 @@ void BeaconApplication::carryState()
             workStateCnt++;
             sensorBroadCast();                      // broadcast
         }
-    }
 }
 
 BeaconApplication BeaconApp;

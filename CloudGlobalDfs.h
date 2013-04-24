@@ -134,7 +134,6 @@
 #define EEPADDFREQBROADCAST         EEPADDSENSORID+1                    // frequence of broadcast the sensor value
 #define EEPADDFREQBROADCASTUNIT     EEPADDFREQBROADCAST+2               // unit of frequence
 
-// ACTUATOR ADDRESS
 #define EEPADDIFSETAC               200                                 // if set actuator
 #define EEPADDACTUATORID            EEPADDIFSETAC+1                     // actuator id
 #define EEPADDACTCN                 EEPADDACTUATORID+1                  // how many trigger conditions

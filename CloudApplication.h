@@ -28,8 +28,6 @@ private:
 
     unsigned char dtaSendRf[20];            // data send to rf
     
-    unsigned char ledMode;                  // led Mode
-    
 public:
     
     unsigned char carryDeviceId;            // min device id   
@@ -37,11 +35,9 @@ public:
     unsigned char workStateBuf;             // work state buf
     unsigned long workStateCnt;             // count of work state
     unsigned char flgGetSync;               // get sync
-    unsigned char bdFreq;                   // broadcart freq...
     
 private:
     void sendJoin();                        // tell other devices a minId join
-    void TriggerAnalog(unsigned char *dta); // trigger when analog
     void sensorBroadCast();                 // sensor broadcast 
     void carryState();                      // carry state
     
