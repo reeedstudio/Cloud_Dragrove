@@ -80,6 +80,7 @@ void BeaconApplication::sensorBroadCast()
     {
         return ;
     }
+    
     BcnDrive.setLedShine(LEDCOLORGREEN, 5);
 
     unsigned char dtaSe[10];
