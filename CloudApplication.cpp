@@ -40,9 +40,6 @@ void BeaconApplication::init()
     workState       = WORKSTATEJOIN;
     workStateBuf    = WORKSTATEJOIN;
     workStateCnt    = 0;
-   
-    flgGetSync      = 0;
-
     BcnDrive.init();
 }
 

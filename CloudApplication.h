@@ -34,7 +34,6 @@ public:
     unsigned char workState;                // work state
     unsigned char workStateBuf;             // work state buf
     unsigned long workStateCnt;             // count of work state
-    unsigned char flgGetSync;               // get sync
     
 private:
     void sendJoin();                        // tell other devices a minId join
