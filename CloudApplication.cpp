@@ -41,13 +41,10 @@ void BeaconApplication::init()
     workState       = WORKSTATEJOIN;
     workStateBuf    = WORKSTATEJOIN;
     workStateCnt    = 0;
-    cntButtonOn     = 0;
-    cntButton       = 0;
+   
     flgGetSync      = 0;
     ledMode         = 1;
-    cntButtonMainBuf    = 0;
-    cntButtonMain   = 0;
-    cntButtonHit    = 0;
+
     bdFreq          = CONFIG.freqSensor;
     BcnDrive.init();
 }
@@ -59,9 +56,7 @@ void BeaconApplication::init()
 void BeaconApplication::appTimerIsr()
 {
     BcnDrive.ledIsr();
-    cntButton++;
     workStateCnt++;
-    cntButtonMain++;
 }
 
 /*********************************************************************************************************
@@ -87,6 +82,7 @@ void BeaconApplication::sendDtaRfbee(unsigned char len, unsigned char *dta)
 *********************************************************************************************************/
 void BeaconApplication::sensorBroadCast()
 {
+
     if(CONFIG.ifSetSensor != 0x55)
     {
         return ;
@@ -113,175 +109,6 @@ void BeaconApplication::sensorBroadCast()
 
     sendDtaRfbee(6+dtaSe[0], dtaSendRf);
 
-    for(int i = 5+dtaSe[0]+4; i>=2; i--)
-    {
-        dtaSendRf[i] = dtaSendRf[i-2];
-    }
-    dtaSendRf[0] = FRAMESTART1;
-    dtaSendRf[1] = FRAMESTART2;
-    if(isTrigger(dtaSendRf))                        // trigger device itself
-    {
-        Trigger(dtaSendRf);
-    }
-}
-
-/*********************************************************************************************************
-** Function name:           isTrigger
-** Descriptions:            if trigger
-*********************************************************************************************************/
-bool BeaconApplication::isTrigger(unsigned char *dta)
-{
-    __printlnApp("GET IN ISTRIGGER!");
-
-    if(CONFIG.ifSetActuator != 0x55)
-    {
-        __printlnApp("ACTUATOR NO CONFIG!");
-        return 0;
-    }
-    // it is a broadcast frame!
-    if(dta[FRAMEBITDESTID] == 0 && dta[FRAMEBITFRAME] == FRAMETYPEBC)
-    {
-        for(int i = 0; i<CONFIG.nTC; i++)
-        {
-            if(CONFIG.TC[i][1] == dta[FRAMEBITSRCID])
-            {
-                __printApp("GET TRIGGER!!\t");
-                __printlnApp(i+1);
-                tcNum = i+1;
-                return tcNum;
-            }
-            else
-            {
-                __printlnApp("SRCID ERR!!\t");
-                __printApp("tc[i][1] = ");
-                __printlnApp(CONFIG.TC[i][1]);
-                __printApp("dta[FRA..] = ");
-                __printlnApp(dta[FRAMEBITSRCID]); //CONFIG.idDevice
-                __printApp("CONFIG.idDevice = ");
-                __printlnApp(CONFIG.idDevice);
-            }
-        }
-    }
-    else
-    {
-        __printlnApp("NO TRIGGER!");
-    }
-    return 0;
-}
-
-/*********************************************************************************************************
-** Function name:           Trigger
-** Descriptions:            do something
-*********************************************************************************************************/
-void BeaconApplication::Trigger(unsigned char *dta)
-{
-    if(ledMode)
-    {
-        BcnDrive.setLedShine(LEDCOLORGREEN, 10);
-    }
-
-    unsigned char nTmp[3];
-    /*
-     *      IO Actuator
-     */
-
-    __printAppS("trigger");
-    if(CONFIG.idActuator <= 200)        // IO
-    {
-        TriggerAnalog(dta);
-    }
-    else
-    {
-        switch(CONFIG.idActuator)
-        {
-            case ACTUATOROLED12864:
-
-            nTmp[0] = dta[FRAMEBITDATALEN];
-            for(int i = 0; i<dta[FRAMEBITDATALEN]; i++)
-            {
-                nTmp[i+1] = dta[FRAMEBITDATA+i];
-            }
-            ACTUATOR.driveActuator(nTmp);
-            break;
-
-            default:
-            ;
-        }
-    }
-}
-
-/*********************************************************************************************************
-** Function name:           TriggerAnalog
-** Descriptions:            trigger when analog
-*********************************************************************************************************/
-void BeaconApplication::TriggerAnalog(unsigned char *dta)
-{
-
-    unsigned int cmpDtaSensor   = 0;
-    unsigned int cmpDtaSet      = 0;
-    unsigned char dtaAc[2];
-
-    unsigned int cmpLarge      = 0;             // lower limit
-    unsigned int cmpSmall      = 0;             // higer limit
-
-    __printAppS("\r\ndta[LEN] = ");
-    __printlnAppS(dta[FRAMEBITDATALEN]);
-
-    if(dta[FRAMEBITDATALEN] == 1)
-    {
-        cmpDtaSensor = dta[EEPOFFSETACDATA];
-        for(int i = 0; i<2; i++)
-        {
-            cmpDtaSet       = cmpDtaSet<<8;
-            cmpDtaSet      += CONFIG.TC[tcNum-1][EEPOFFSETACDATA+i];
-            __printlnAppS("\r\ncmpDtaSet = :");
-            __printlnAppS(cmpDtaSet);
-        }
-    }
-    else
-    for(int i = 0; i<dta[FRAMEBITDATALEN]; i++)
-    {
-        cmpDtaSensor    = cmpDtaSensor<<8;
-        cmpDtaSet       = cmpDtaSet<<8;
-        cmpDtaSet      += CONFIG.TC[tcNum-1][EEPOFFSETACDATA+i];
-        __printlnAppS("\r\ncmpDtaSet = :");
-        __printlnAppS(cmpDtaSet);
-        cmpDtaSensor   += dta[FRAMEBITDATA+i];
-    }
-
-    /*
-     *      to give value to cmpLarge and cmpSmall
-     */
-
-    switch(CONFIG.TC[tcNum-1][EEPOFFSETACOMTYPE])
-    {
-        case COMPTYPEACGREAT:
-        cmpLarge = 1023;
-        cmpSmall = cmpDtaSet;
-
-        break;
-
-        case COMPTYPEACLESS:
-        cmpLarge = cmpDtaSet;
-        cmpSmall = 0;
-
-        break;
-
-        default:
-        ;
-    }
-
-    __printlnAppS("TRIGGER:");
-    __printAppS("cmpLarge = ");
-    __printlnAppS(cmpLarge);
-    __printAppS("cmpSmall = ");
-    __printlnAppS(cmpSmall);
-
-    unsigned char dtaCmp = (cmpDtaSensor >= cmpSmall && cmpDtaSensor <= cmpLarge);
-
-    dtaAc[0] = 1;
-    dtaAc[1] = (CONFIG.TC[tcNum-1][EEPOFFSETACACTIONTYPE] == ACTIONTYPEON) ? dtaCmp : 1-dtaCmp;
-    ACTUATOR.driveActuator(dtaAc);
 }
 
 /*********************************************************************************************************

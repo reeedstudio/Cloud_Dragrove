@@ -26,13 +26,6 @@ class BeaconApplication{
 
 private:
 
-    unsigned char tcNum;                    // tc num
-    unsigned int  cntButtonOn;              // button on counter
-    unsigned int  cntButtonOff;             // button off counter
-    unsigned int  cntButton;                // count button
-    unsigned long cntButtonMain;            // count button
-    unsigned long cntButtonMainBuf;         // count button buf
-    unsigned char cntButtonHit;             // count of hit
     unsigned char dtaSendRf[20];            // data send to rf
     
     unsigned char ledMode;                  // led Mode
@@ -58,8 +51,6 @@ public:
 	void sendDtaRfbee(unsigned char len, 
                       unsigned char *dta);  // send buf to rfbee
     void appTimerIsr();                     // put in a tiemr isr, 1ms
-    bool isTrigger(unsigned char *dta);     // if get trigger
-    void Trigger(unsigned char *dta);       // trigger
 
     
 };

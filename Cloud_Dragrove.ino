@@ -123,9 +123,9 @@ void rfDtaProc()
             BeaconApp.bdFreq         = __GdtaUart[FRAMEBITDATA];                // change freq
             EEPROM.write(EEPADDFREQBROADCAST, BeaconApp.bdFreq);                // write to eeprom
         }
-        else if((BeaconApp.workState == WORKSTATECARRY || BeaconApp.workState == WORKSTATENARMAL) && BeaconApp.isTrigger(__GdtaUart))     // if the data trigger
+        else if((BeaconApp.workState == WORKSTATECARRY || BeaconApp.workState == WORKSTATENARMAL))     // if the data trigger
         {
-            BeaconApp.Trigger(__GdtaUart);
+            // add code here
         }
         __GdtaUartLen      = 0;
         __GstringComplete  = 0;
