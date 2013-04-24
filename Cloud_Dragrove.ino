@@ -117,9 +117,7 @@ void rfDtaProc()
     {
         if(__GdtaUart[FRAMEBITFRAME] == 4)                                      // other device join
         {
-            BeaconApp.carryDeviceId  = __GdtaUart[FRAMEBITSRCID];
-            BeaconApp.workStateCnt   = 0;
-            BeaconApp.workStateBuf   = BeaconApp.workState;
+            // add code here
         }
         else if((BeaconApp.workState == WORKSTATECARRY || BeaconApp.workState == WORKSTATENARMAL))     // if the data trigger
         {

@@ -37,7 +37,6 @@
 *********************************************************************************************************/
 void BeaconApplication::init()
 {
-    carryDeviceId   = CONFIG.idDevice;
     workState       = WORKSTATEJOIN;
     workStateBuf    = WORKSTATEJOIN;
     workStateCnt    = 0;
@@ -121,8 +120,6 @@ void BeaconApplication::sendJoin()
 *********************************************************************************************************/
 void BeaconApplication::carryState()
 {
-    if(carryDeviceId != CONFIG.idDevice)return ;
-
 
         if(workStateCnt % 1000 == 10)               // send sync
         {
