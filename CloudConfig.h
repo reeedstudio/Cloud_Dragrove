@@ -27,7 +27,10 @@
 class BeaconConfig{
     
     public:
-
+    
+    unsigned char ifSetDevice;          // if config device
+    unsigned char idDevice;             // id of device
+    
     unsigned char ifSetSensor;          // if config sensor
     unsigned char idSensor;             // id of sensor
 
