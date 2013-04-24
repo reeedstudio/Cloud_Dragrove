@@ -119,7 +119,7 @@ void rfDtaProc()
         {
             // add code here
         }
-        else if((BeaconApp.workState == WORKSTATECARRY || BeaconApp.workState == WORKSTATENARMAL))     // if the data trigger
+        else        // add code here
         {
             // add code here
         }

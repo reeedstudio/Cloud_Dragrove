@@ -31,7 +31,6 @@ private:
 public:
     
     unsigned char carryDeviceId;            // min device id   
-    unsigned char workState;                // work state
     unsigned char workStateBuf;             // work state buf
     unsigned long workStateCnt;             // count of work state
     
