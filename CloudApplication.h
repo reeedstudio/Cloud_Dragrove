@@ -39,7 +39,7 @@ public:
 private:
     void sendJoin();                        // tell other devices a minId join
     void sensorBroadCast();                 // sensor broadcast 
-    void carryState();                      // carry state
+    void cloudWorking();                      // carry state
     
 public:
     

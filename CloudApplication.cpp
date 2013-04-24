@@ -115,10 +115,10 @@ void BeaconApplication::sendJoin()
 }
 
 /*********************************************************************************************************
-** Function name:           carryState
-** Descriptions:            carryState
+** Function name:           cloudWorking
+** Descriptions:            cloudWorking
 *********************************************************************************************************/
-void BeaconApplication::carryState()
+void BeaconApplication::cloudWorking()
 {
 
         if(workStateCnt % 1000 == 10)               // send sync
