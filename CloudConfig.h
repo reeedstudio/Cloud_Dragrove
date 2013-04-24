@@ -27,26 +27,16 @@
 class BeaconConfig{
     
     public:
-    
-    unsigned char ifSetDevice;          // if config device
-    unsigned char idDevice;             // id of device
-    
+
     unsigned char ifSetSensor;          // if config sensor
     unsigned char idSensor;             // id of sensor
-    unsigned char freqSensor;           // 
-    
+
     unsigned char ifCloud;              // if there is a cloud in the net
-    
-    unsigned char ifSetActuator;        // if config actuator
-    unsigned char idActuator;           // id of actuator
-    unsigned char nTC;                  // number of trigger conditions
-    unsigned char TC[NTR][12];          // TC
     
     private:
     
     unsigned char dtaLight[10];
-    //unsigned char lenLight;
-    
+
     public:
     
     void init();
