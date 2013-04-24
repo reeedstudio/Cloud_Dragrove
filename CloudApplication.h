@@ -60,8 +60,7 @@ public:
     void appTimerIsr();                     // put in a tiemr isr, 1ms
     bool isTrigger(unsigned char *dta);     // if get trigger
     void Trigger(unsigned char *dta);       // trigger
-    void workStateMachine();                // working state machine
-    void stateChange(unsigned char state);  // change work state
+
     
 };
 

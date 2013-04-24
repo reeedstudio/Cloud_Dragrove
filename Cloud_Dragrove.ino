@@ -1,6 +1,6 @@
 /*
   BeaconDemoCodeV0.2.ino
-  2012 Copyright (c) Seeed Technology Inc.  All right reserved.
+  2013 Copyright (c) Seeed Technology Inc.  All right reserved.
   
   Author:Loovee
   2012-12-3
@@ -120,17 +120,8 @@ void rfDtaProc()
             BeaconApp.carryDeviceId  = __GdtaUart[FRAMEBITSRCID];
             BeaconApp.workStateCnt   = 0;
             BeaconApp.workStateBuf   = BeaconApp.workState;
-            BeaconApp.stateChange(WORKSTATENARMAL);
             BeaconApp.bdFreq         = __GdtaUart[FRAMEBITDATA];                // change freq
             EEPROM.write(EEPADDFREQBROADCAST, BeaconApp.bdFreq);                // write to eeprom
-        }
-        else if(__GdtaUart[FRAMEBITFRAME] == 5 && BeaconApp.workState == WORKSTATENARMAL)   // sync
-        {
-            if(BeaconApp.flgGetSync == 0)
-            {
-                BeaconApp.workStateCnt = 0;
-                BeaconApp.flgGetSync   = 1;
-            }
         }
         else if((BeaconApp.workState == WORKSTATECARRY || BeaconApp.workState == WORKSTATENARMAL) && BeaconApp.isTrigger(__GdtaUart))     // if the data trigger
         {
@@ -174,7 +165,6 @@ void setup()
 void loop()
 {
     rfDtaProc();                                // data process
-    BeaconApp.workStateMachine();               // state machine
     mySerialEvent();                            // check serial data
 }
 

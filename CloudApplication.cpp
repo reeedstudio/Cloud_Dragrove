@@ -91,7 +91,7 @@ void BeaconApplication::sensorBroadCast()
     {
         return ;
     }
-    
+
     if(ledMode)
     {
         BcnDrive.setLedShine(LEDCOLORGREEN, 5);
@@ -179,7 +179,7 @@ void BeaconApplication::Trigger(unsigned char *dta)
     {
         BcnDrive.setLedShine(LEDCOLORGREEN, 10);
     }
-    
+
     unsigned char nTmp[3];
     /*
      *      IO Actuator
@@ -319,105 +319,7 @@ void BeaconApplication::carryState()
             workStateCnt++;
             sensorBroadCast();                      // broadcast
         }
-        else if(workStateCnt % 1000 == 100)         // begin to sleep
-        {
-            for(int i = 0; i<9; i++)
-            {
-                delay(105);
-                if(!digitalRead(PINSYSBUTT))        // button ?
-                {
-                    workStateBuf = WORKSTATECARRY;
-                    delay(10);
-                    stateChange(WORKSTATEBUTTON);
-                    BcnDrive.rLedCnt = BcnDrive.rLedCnt > 100 ? BcnDrive.rLedCnt-100 : 0;
-                    BcnDrive.gLedCnt = BcnDrive.gLedCnt > 100 ? BcnDrive.gLedCnt-100 : 0;
-                    break;
-                }
-                BcnDrive.rLedCnt = BcnDrive.rLedCnt>100 ? BcnDrive.rLedCnt-100 : 0;
-                BcnDrive.gLedCnt = BcnDrive.gLedCnt>100 ? BcnDrive.gLedCnt-100 : 0;
-            }
-            workStateCnt  = 0;
-        }
     }
-
-    else if(bdFreq == BDF100MS)
-    {
-        if(workStateCnt % 100 == 10)                // send sync
-        {
-            workStateCnt++;
-        }
-        else if(workStateCnt % 100 == 50)
-        {
-            workStateCnt++;
-            sensorBroadCast();                      // broadcast
-        }
-        else if(workStateCnt % 100 >= 99)
-        {
-            workStateCnt = 0;
-        }
-    }
-}
-
-/*********************************************************************************************************
-** Function name:           workStateMachine
-** Descriptions:            workStateMachine
-*********************************************************************************************************/
-void BeaconApplication::workStateMachine()
-{
-
-    if(CONFIG.ifSetDevice != 0x55 && workState != WORKSTATECFG)
-    {
-        return ;
-    }
-
-    switch(workState)
-    {
-        /***********************************************************************************************
-        ******************************************* WORKSTATEJOIN **************************************
-        ***********************************************************************************************/
-        case WORKSTATEJOIN:
-
-        if(CONFIG.ifSetDevice != 0x55)                      // device not config
-        {
-            return ;
-        }
-
-        if(workStateCnt < 2500)                             // send join for 2s
-        {
-            if(workStateCnt % 60 == 0)                      // send join per 60ms
-            {
-                workStateCnt++;
-                sendJoin();
-                BcnDrive.setLedShine(LEDCOLORRED, 5);
-            }
-        }
-        else
-        {
-            workStateBuf = WORKSTATEJOIN;
-            stateChange(WORKSTATECARRY);
-        }
-
-        break;
-
-        /***********************************************************************************************
-        ******************************************* WORKSTATECARRY *************************************
-        ***********************************************************************************************/
-        case WORKSTATECARRY:
-        carryState();
-        break;
-
-        default:
-        ;
-    }
-}
-
-/*********************************************************************************************************
-** Function name:           stateChange
-** Descriptions:            goto state
-*********************************************************************************************************/
-void BeaconApplication::stateChange(unsigned char state)
-{
-    workState = state;
 }
 
 BeaconApplication BeaconApp;
