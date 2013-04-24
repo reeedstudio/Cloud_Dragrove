@@ -115,7 +115,7 @@ void rfDtaProc()
 
     if(__GstringComplete == 1 && checkGoodDta(__GdtaUart))                      // if serial get data
     {
-        if(__GdtaUart[FRAMEBITFRAME] == 4)                                      // other device join
+        if(__GdtaUart[FRAMEBITFRAME] == 1)                                      // other device join
         {
             // add code here
         }
@@ -126,7 +126,7 @@ void rfDtaProc()
         __GdtaUartLen      = 0;
         __GstringComplete  = 0;
         
-        
+        BcnDrive.setLedShine(1, 20);
     }
 }
 
@@ -138,11 +138,8 @@ void setup()
 {
     
     BcnDrive.init();
-
     Serial.begin(57600);                     // Serial, to send/rev data from RFBee
-    
     Serial.println("Serial init over");
-    
     CONFIG.init();                              // init config
     SENSOR.init(CONFIG.idSensor);               // init sensor
     BeaconApp.init();                           // init application
