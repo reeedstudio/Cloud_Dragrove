@@ -125,6 +125,8 @@ void rfDtaProc()
         }
         __GdtaUartLen      = 0;
         __GstringComplete  = 0;
+        
+        
     }
 }
 
@@ -136,12 +138,8 @@ void setup()
 {
     
     BcnDrive.init();
-    BcnDrive.sysPowerOn();                      // power on
-    BcnDrive.rfBeePowerOff();
-    delay(500);
-    BcnDrive.rfBeePowerOff();
-    
-    Serial.begin(BAUDRATE);                     // Serial, to send/rev data from RFBee
+
+    Serial.begin(57600);                     // Serial, to send/rev data from RFBee
     
     Serial.println("Serial init over");
     
@@ -151,6 +149,8 @@ void setup()
     
     Timer1.initialize(1000);                    // set a timer of length 1ms
     Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
+    
+    BeaconApp.sendJoin();
 }
 
 /*********************************************************************************************************
