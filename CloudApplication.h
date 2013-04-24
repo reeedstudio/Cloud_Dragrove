@@ -29,9 +29,7 @@ private:
     unsigned char dtaSendRf[20];            // data send to rf
     
 public:
-    
-    unsigned char carryDeviceId;            // min device id   
-    unsigned char workStateBuf;             // work state buf
+
     unsigned long workStateCnt;             // count of work state
     
 private:

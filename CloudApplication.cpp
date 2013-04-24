@@ -37,8 +37,8 @@
 *********************************************************************************************************/
 void BeaconApplication::init()
 {
-    workStateBuf    = WORKSTATEJOIN;
     workStateCnt    = 0;
+
     BcnDrive.init();
 }
 
@@ -111,8 +111,8 @@ void BeaconApplication::sendJoin()
 }
 
 /*********************************************************************************************************
-** Function name:           cloudWorking
-** Descriptions:            cloudWorking
+** Function name:           carryState
+** Descriptions:            carryState
 *********************************************************************************************************/
 void BeaconApplication::cloudWorking()
 {
