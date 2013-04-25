@@ -22,7 +22,6 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <BeaconSensor.h>
-//#include <BeaconActuator.h>
 #include <BeaconDrive.h>
 #include <TimerOne.h>
 #include <Wire.h>
@@ -31,16 +30,6 @@
 #include "CloudApplication.h"
 #include "CloudConfig.h"
 #include "CloudGlobalDfs.h"
-
-#define __DebugIno      0
-
-#if __DebugIno
-#define __printIno(x)   __print(x)
-#define __printlnIno(x) __println(x)
-#else
-#define __printIno(x)
-#define __printlnIno(x)
-#endif
 
 unsigned char __GdtaUart[50];                   // uart data buff
 unsigned char __GdtaUartLen        = 0;         // uart data len
@@ -115,11 +104,13 @@ void rfDtaProc()
 
     if(__GstringComplete == 1 && checkGoodDta(__GdtaUart))                      // if serial get data
     {
-        if(__GdtaUart[FRAMEBITFRAME] == 1)                                      // other device join
+        if(__GdtaUart[FRAMEBITFRAME] == 4)                                      // other device join
         {
             // add code here
+            d
+            
         }
-        else        // add code here
+        else if(__GdtaUart[FRAMEBITFRAME] == 1)
         {
             // add code here
         }
@@ -138,7 +129,7 @@ void setup()
 {
     
     BcnDrive.init();
-    Serial.begin(57600);                     // Serial, to send/rev data from RFBee
+    Serial.begin(57600);                        // Serial, to send/rev data from RFBee
     Serial.println("Serial init over");
     CONFIG.init();                              // init config
     SENSOR.init(CONFIG.idSensor);               // init sensor
