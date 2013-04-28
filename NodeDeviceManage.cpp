@@ -30,11 +30,11 @@
 *********************************************************************************************************/
 void NodeManage::init()
 {
+
     atomNum = 0;
     memset(atomId, 0, MAXDEVICE);
     memset(atomValue, 0, MAXDEVICE);
     memset(getAtomValue, 0, MAXDEVICE);
-
 }
 
 /*********************************************************************************************************
@@ -43,6 +43,7 @@ void NodeManage::init()
 *********************************************************************************************************/
 unsigned char NodeManage::getDeviceNum()
 {
+
     return atomNum;
 }
 
@@ -63,7 +64,8 @@ unsigned char NodeManage::addDevice(unsigned char id)
 *********************************************************************************************************/
 unsigned char NodeManage::delDevice(unsigned char id)
 {
-    unsigned char location      = checkId(id);
+
+    unsigned char location = checkId(id);
     if(location==0)return 0;
     
     return 1;
