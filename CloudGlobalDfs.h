@@ -22,34 +22,6 @@
 #ifndef __CLOUDGLOBALDFS_H__
 #define __CLOUDGLOBALDFS_H__
 
-#define __DebugApp                  0                   // debug i2c
-#define __DebugAppSerial            0                   // debug Serial
-
-#define _XBEE                       1
-#define _RFBEE                      0
-
-#if _XBEE
-#define BAUDRATE                    57600U
-#elif _RFBEE
-#define BAUDRATE                    38400U
-#endif
-
-#if __DebugAppSerial                                    // debug use Serial
-#define __printAppS(x)              Serial.print(x)
-#define __printlnAppS(x)            Serial.println(x)
-#else
-#define __printAppS(x)
-#define __printlnAppS(x)
-#endif
-
-#if __DebugApp
-#define __printApp(x)               __print(x)
-#define __printlnApp(x)             __println(x)
-#else
-#define __printApp(x)
-#define __printlnApp(x)
-#endif
-
 #define SendByteToRfbee             Serial.write       // send a byte to Serial
 
 #define TURNOFFDELAYTIME            80                  // when press the button for xx*10 ms, turn off the system
@@ -84,12 +56,12 @@
 #define YEECLOUD                    1
 
 // EEPRMO ADDRESS
-#define EEPADDISSET                 100                                 // if setted! if not ,zero, if setted, 1
-#define EEPADDDEVICEID              101                                 // device id
+#define EEPADDISSET                 100                 // if setted! if not ,zero, if setted, 1
+#define EEPADDDEVICEID              101                 // device id
 
 // SENSOR ADDRESS
-#define EEPADDIFSETSE               120                                 // if set sensor
-#define EEPADDSENSORID              EEPADDIFSETSE+1                     // sensor id
+#define EEPADDIFSETSE               120                 // if set sensor
+#define EEPADDSENSORID              EEPADDIFSETSE+1     // sensor id
 
 #endif
 
