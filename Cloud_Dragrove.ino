@@ -41,21 +41,7 @@ unsigned char __GstringComplete    = 0;         // if get data
 *********************************************************************************************************/
 void timer1ISR()
 {
-    APP.appTimerIsr();                    // application isr
-}
-
-void just_for_fun(unsigned char *dta)
-{
-    for(int i = 0; i<5; i++)
-    {
-        if(dta[i+2] != 0x55)
-        {
-            return ;
-        }
-    }
-    BcnDrive.beepOn();
-    
-    while(1);               // get 10 continus 0x55, down!!
+    APP.appTimerIsr();                          // application isr
 }
 
 /*********************************************************************************************************
@@ -132,7 +118,7 @@ void setup()
     Serial.println("Serial init over");
     CONFIG.init();                              // init config
     SENSOR.init(CONFIG.idSensor);               // init sensor
-    APP.init();                           // init application
+    APP.init();                                 // init application
     
     Timer1.initialize(1000);                    // set a timer of length 1ms
     Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
