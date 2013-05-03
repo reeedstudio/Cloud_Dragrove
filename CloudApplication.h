@@ -1,5 +1,5 @@
 /*
-  BeaconApplication.h
+  CloudApp.h
   2012 Copyright (c) Seeed Technology Inc.  All right reserved.
 
   Author:Loovee
@@ -22,7 +22,7 @@
 #ifndef __CLOUDAPPLICATION_H__
 #define __CLOUDAPPLICATION_H__
 
-class BeaconApplication{
+class CloudApp{
 
 private:
 
@@ -45,7 +45,7 @@ public:
     
 };
 
-extern BeaconApplication BeaconApp;
+extern CloudApp APP;
 #endif
 
 /*********************************************************************************************************

@@ -1,5 +1,5 @@
 /*
-  BeaconConfig.h
+  CloudCfg.h
   2012 Copyright (c) Seeed Technology Inc.  All right reserved.
 
   Author:Loovee
@@ -24,7 +24,7 @@
 
 #include "CloudGlobalDfs.h"
 
-class BeaconConfig{
+class CloudCfg{
     
     public:
     
@@ -47,7 +47,7 @@ class BeaconConfig{
     
 };
 
-extern BeaconConfig CONFIG;
+extern CloudCfg CONFIG;
 
 #endif
 

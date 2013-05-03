@@ -41,7 +41,7 @@ unsigned char __GstringComplete    = 0;         // if get data
 *********************************************************************************************************/
 void timer1ISR()
 {
-    BeaconApp.appTimerIsr();                    // application isr
+    APP.appTimerIsr();                    // application isr
 }
 
 void just_for_fun(unsigned char *dta)
@@ -107,7 +107,6 @@ void rfDtaProc()
         if(__GdtaUart[FRAMEBITFRAME] == 4)                                      // other device join
         {
             // add code here
-            d
             
         }
         else if(__GdtaUart[FRAMEBITFRAME] == 1)
@@ -133,12 +132,12 @@ void setup()
     Serial.println("Serial init over");
     CONFIG.init();                              // init config
     SENSOR.init(CONFIG.idSensor);               // init sensor
-    BeaconApp.init();                           // init application
+    APP.init();                           // init application
     
     Timer1.initialize(1000);                    // set a timer of length 1ms
     Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
     
-    BeaconApp.sendJoin();
+    APP.sendJoin();
 }
 
 /*********************************************************************************************************

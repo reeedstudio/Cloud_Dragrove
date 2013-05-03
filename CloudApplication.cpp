@@ -1,5 +1,5 @@
 /*
-  BeaconApplication.cpp
+  CloudApp.cpp
   2012 Copyright (c) Seeed Technology Inc.  All right reserved.
 
   Author:Loovee
@@ -35,7 +35,7 @@
 ** Function name:           init
 ** Descriptions:            init
 *********************************************************************************************************/
-void BeaconApplication::init()
+void CloudApp::init()
 {
     workStateCnt    = 0;
 
@@ -46,7 +46,7 @@ void BeaconApplication::init()
 ** Function name:           appTimerIsr
 ** Descriptions:            appTimerIsr
 *********************************************************************************************************/
-void BeaconApplication::appTimerIsr()
+void CloudApp::appTimerIsr()
 {
     BcnDrive.ledIsr();
     workStateCnt++;
@@ -56,7 +56,7 @@ void BeaconApplication::appTimerIsr()
 ** Function name:           sendDtaRfbee
 ** Descriptions:            send buf to rfbee
 *********************************************************************************************************/
-void BeaconApplication::sendDtaRfbee(unsigned char len, unsigned char *dta)
+void CloudApp::sendDtaRfbee(unsigned char len, unsigned char *dta)
 {
     SendByteToRfbee(FRAMESTART1);
     SendByteToRfbee(FRAMESTART2);
@@ -73,7 +73,7 @@ void BeaconApplication::sendDtaRfbee(unsigned char len, unsigned char *dta)
 ** Function name:           sensorBroadCast
 ** Descriptions:            BroadCast sensor value now
 *********************************************************************************************************/
-void BeaconApplication::sensorBroadCast()
+void CloudApp::sensorBroadCast()
 {
 
     if(CONFIG.ifSetSensor != 0x55)
@@ -106,7 +106,7 @@ void BeaconApplication::sensorBroadCast()
 ** Function name:           sendJoin
 ** Descriptions:            sendJoin
 *********************************************************************************************************/
-void BeaconApplication::sendJoin()
+void CloudApp::sendJoin()
 {
     unsigned char dta[] = {0, 0, 0, 4, 0};
     for(int i = 0; i<20; i++)
@@ -120,7 +120,7 @@ void BeaconApplication::sendJoin()
 ** Function name:           carryState
 ** Descriptions:            carryState
 *********************************************************************************************************/
-void BeaconApplication::cloudWorking()
+void CloudApp::cloudWorking()
 {
 
         if(workStateCnt % 1000 == 10)               // send sync
@@ -134,7 +134,7 @@ void BeaconApplication::cloudWorking()
         }
 }
 
-BeaconApplication BeaconApp;
+CloudApp APP;
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/

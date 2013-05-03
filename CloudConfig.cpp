@@ -1,5 +1,5 @@
 /*
-  BeaconConfig.cpp
+  CloudCfg.cpp
   2012 Copyright (c) Seeed Technology Inc.  All right reserved.
 
   Author:Loovee
@@ -36,7 +36,7 @@
 ** Function name:           init
 ** Descriptions:            init
 *********************************************************************************************************/
-void BeaconConfig::init()
+void CloudCfg::init()
 {
 
     ifCloud     = 0;
@@ -60,14 +60,14 @@ void BeaconConfig::init()
 ** Function name:           cloudConfig
 ** Descriptions:            config
 *********************************************************************************************************/
-bool BeaconConfig::cloudConfig()
+bool CloudCfg::cloudConfig()
 {
     return 1;
     // add code here
 
 }
 
-BeaconConfig CONFIG;
+CloudCfg CONFIG;
 
 /*********************************************************************************************************
   END FILE
