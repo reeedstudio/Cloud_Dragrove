@@ -27,8 +27,8 @@
 #include <Wire.h>
 #include <SeeedOLED.h>
 
-#include "CloudApplication.h"
-#include "CloudConfig.h"
+#include "CloudApp.h"
+#include "CloudCfg.h"
 #include "CloudGlobalDfs.h"
 
 unsigned char __GdtaUart[50];                   // uart data buff

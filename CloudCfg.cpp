@@ -28,8 +28,8 @@
 #include <I2C_Uart.h>
 #include <BeaconDrive.h>
 
-#include "CloudApplication.h"
-#include "CloudConfig.h"
+#include "CloudApp.h"
+#include "CloudCfg.h"
 #include "CloudGlobalDfs.h"
 
 /*********************************************************************************************************

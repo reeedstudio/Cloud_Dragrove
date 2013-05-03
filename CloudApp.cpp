@@ -27,8 +27,8 @@
 #include <BeaconDrive.h>
 #include <EEPROM.h>
 
-#include "CloudApplication.h"
-#include "CloudConfig.h"
+#include "CloudApp.h"
+#include "CloudCfg.h"
 #include "CloudGlobalDfs.h"
 
 /*********************************************************************************************************
