@@ -46,19 +46,14 @@ void NodeManage::init()
 *********************************************************************************************************/
 void NodeManage::timerIsr()
 {
-    cntModeM++;
+    cntNodeM++;
     
-    if(!yeelinkFree && cntModeM > 12000)
-    {
-        cntModeM = 0;
-        
-    }
-    
-    if(cntNodeM > 12000)
+    if(!yeelinkFree && cntNodeM > 12000)
     {
         cntNodeM = 0;
-        if(yeelinkFree)
+        
     }
+
 }
 
 /*********************************************************************************************************

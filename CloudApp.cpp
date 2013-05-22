@@ -28,7 +28,6 @@
 #include <EEPROM.h>
 
 #include "CloudApp.h"
-#include "CloudCfg.h"
 #include "CloudGlobalDfs.h"
 
 /*********************************************************************************************************
@@ -52,70 +51,6 @@ void CloudApp::appTimerIsr()
 }
 
 /*********************************************************************************************************
-** Function name:           sendDtaRfbee
-** Descriptions:            send buf to rfbee
-*********************************************************************************************************/
-void CloudApp::sendDtaRfbee(unsigned char len, unsigned char *dta)
-{
-    SendByteToRfbee(FRAMESTART1);
-    SendByteToRfbee(FRAMESTART2);
-    for(unsigned int i = 0; i<len; i++)
-    {
-        SendByteToRfbee(dta[i]);
-    }
-    SendByteToRfbee(FRAMEEND1);
-    SendByteToRfbee(FRAMEEND2);
-    
-}
-
-/*********************************************************************************************************
-** Function name:           sensorBroadCast
-** Descriptions:            BroadCast sensor value now
-*********************************************************************************************************/
-void CloudApp::sensorBroadCast()
-{
-
-    if(CONFIG.ifSetSensor != 0x55)
-    {
-        return ;
-    }
-    
-    BcnDrive.setLedShine(LEDCOLORGREEN, 5);
-
-    unsigned char dtaSe[10];
-    SENSOR.getSensor(dtaSe);
-
-    dtaSendRf[0] = CONFIG.idDevice;
-    dtaSendRf[1] = CONFIG.idSensor;
-    dtaSendRf[2] = 0;
-    dtaSendRf[3] = FRAMETYPEBC;
-    dtaSendRf[4] = dtaSe[0];
-
-    for(int i = 0; i<dtaSe[0]; i++)
-    {
-        dtaSendRf[i+5] = dtaSe[i+1];
-    }
-    dtaSendRf[5+dtaSe[0]] = 0;
-
-    sendDtaRfbee(6+dtaSe[0], dtaSendRf);
-
-}
-
-/*********************************************************************************************************
-** Function name:           sendJoin
-** Descriptions:            sendJoin
-*********************************************************************************************************/
-void CloudApp::sendJoin()
-{
-    unsigned char dta[] = {0, 0, 0, 4, 0};
-    for(int i = 0; i<20; i++)
-    {
-        delay(100);
-        sendDtaRfbee(5, dta);        
-    }
-}
-
-/*********************************************************************************************************
 ** Function name:           carryState
 ** Descriptions:            carryState
 *********************************************************************************************************/
@@ -126,11 +61,7 @@ void CloudApp::cloudWorking()
         {
             workStateCnt++;
         }
-        else if(workStateCnt % 1000 == 50)          // broadcast sensor value
-        {
-            workStateCnt++;
-            sensorBroadCast();                      // broadcast
-        }
+
 }
 
 CloudApp APP;

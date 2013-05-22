@@ -21,14 +21,10 @@
 */
 #include <Arduino.h>
 #include <EEPROM.h>
-#include <BeaconSensor.h>
 #include <BeaconDrive.h>
 #include <TimerOne.h>
-#include <Wire.h>
-#include <SeeedOLED.h>
 
 #include "CloudApp.h"
-#include "CloudCfg.h"
 #include "CloudGlobalDfs.h"
 
 unsigned char __GdtaUart[50];                   // uart data buff
@@ -116,14 +112,11 @@ void setup()
     BcnDrive.init();
     Serial.begin(57600);                        // Serial, to send/rev data from RFBee
     Serial.println("Serial init over");
-    CONFIG.init();                              // init config
-    SENSOR.init(CONFIG.idSensor);               // init sensor
     APP.init();                                 // init application
     
     Timer1.initialize(1000);                    // set a timer of length 1ms
     Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
-    
-    APP.sendJoin();
+
 }
 
 /*********************************************************************************************************

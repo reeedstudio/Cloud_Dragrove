@@ -34,14 +34,9 @@ public:
     
 public:
 
-    void sendJoin();                        // tell other devices a minId join
-    void sensorBroadCast();                 // sensor broadcast 
     void cloudWorking();                    // carry state
-
     void init();                            // init
-	void sendDtaRfbee(unsigned char len, unsigned char *dta);  // send buf to rfbee
     void appTimerIsr();                     // put in a tiemr isr, 1ms
-
     
 };
 
