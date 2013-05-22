@@ -35,6 +35,30 @@ void NodeManage::init()
     memset(atomId, 0, MAXDEVICE);
     memset(atomValue, 0, MAXDEVICE);
     memset(getAtomValue, 0, MAXDEVICE);
+    
+    yeelinkFree = 1;                                                // if yeelink free
+    cntNodeM    = 0;                                                // count of node manage
+}
+
+/*********************************************************************************************************
+** Function name:           addDevice
+** Descriptions:            add a device
+*********************************************************************************************************/
+void NodeManage::timerIsr()
+{
+    cntModeM++;
+    
+    if(!yeelinkFree && cntModeM > 12000)
+    {
+        cntModeM = 0;
+        
+    }
+    
+    if(cntNodeM > 12000)
+    {
+        cntNodeM = 0;
+        if(yeelinkFree)
+    }
 }
 
 /*********************************************************************************************************

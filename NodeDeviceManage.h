@@ -28,19 +28,24 @@ class NodeManage
 {
 private:
     
-    unsigned char atomNum;                          // number of AtomDevice
+    unsigned char atomNum;                                      // number of AtomDevice
     
     unsigned char atomId[MAXDEVICE];     
     unsigned int  atomValue[MAXDEVICE];
     bool getAtomValue[MAXDEVICE];
     
+    bool yeelinkFree;                                           // if yeelink free
+    long cntNodeM;                                              // count of node manage
+    
 public:
     
     void init();
+    void timerIsr();                                            // enter per 1ms
+    
     unsigned char getDeviceNum();
-    unsigned char addDevice(unsigned char id);      // add a device
-    unsigned char delDevice(unsigned char id);      // delete a device
-    unsigned char checkId(unsigned char id);        // if certain id in net
+    unsigned char addDevice(unsigned char id);                  // add a device
+    unsigned char delDevice(unsigned char id);                  // delete a device
+    unsigned char checkId(unsigned char id);                    // if certain id in net
 
     unsigned char pushDta(unsigned char id, int dta);           // push data to certain device
     unsigned char popDta(unsigned char id, int *dta);           // po
