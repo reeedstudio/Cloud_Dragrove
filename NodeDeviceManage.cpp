@@ -20,9 +20,13 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #include <string.h>
+#include <SoftwareSerial.h>
+#include <Streaming.h>
 
 #include "NodeDeviceManage.h"
 #include "CloudGlobalDfs.h"s
+
+SoftwareSerial mySerial(6, 7);  
 
 /*********************************************************************************************************
 ** Function name:           addDevice
@@ -31,13 +35,16 @@
 void NodeManage::init()
 {
 
-    atomNum = 0;
-    memset(atomId, 0, MAXDEVICE);
+    atomNum     = 0;
+    postNumNow  = 0;
+    memset(atomId, 0, MAXDEVICE*3);
     memset(atomValue, 0, MAXDEVICE);
     memset(getAtomValue, 0, MAXDEVICE);
     
     yeelinkFree = 1;                                                // if yeelink free
     cntNodeM    = 0;                                                // count of node manage
+    
+    mySerial.begin(9600);
 }
 
 /*********************************************************************************************************
@@ -46,12 +53,13 @@ void NodeManage::init()
 *********************************************************************************************************/
 void NodeManage::timerIsr()
 {
+    
     cntNodeM++;
     
     if(!yeelinkFree && cntNodeM > 12000)
     {
-        cntNodeM = 0;
-        
+        cntNodeM    = 0;
+        yeelinkFree = 1;
     }
 
 }
@@ -60,9 +68,8 @@ void NodeManage::timerIsr()
 ** Function name:           addDevice
 ** Descriptions:            add a device
 *********************************************************************************************************/
-unsigned char NodeManage::getDeviceNum()
+int NodeManage::getDeviceNum()
 {
-
     return atomNum;
 }
 
@@ -70,68 +77,141 @@ unsigned char NodeManage::getDeviceNum()
 ** Function name:           addDevice
 ** Descriptions:            add a device
 *********************************************************************************************************/
-unsigned char NodeManage::addDevice(unsigned char id)
+int NodeManage::addDevice(unsigned char *id)
 {
 
-    if(checkId(id))return checkId(id);          // certain id esit
-    atomId[atomNum++] = id;
+    for(int i=0; i<3; i++)
+    {
+        atomId[atomNum][i] = id[i];
+    }
+    
+    // add device here
+    yeelinkAdd(atomId[atomNum][0], atomId[atomNum][1], atomId[atomNum][2]);
+    
+    return atomNum++;
 }
 
-/*********************************************************************************************************
-** Function name:           delDevice
-** Descriptions:            delete a device
-*********************************************************************************************************/
-unsigned char NodeManage::delDevice(unsigned char id)
-{
 
-    unsigned char location = checkId(id);
-    if(location==0)return 0;
+/*********************************************************************************************************
+** Function name:           checkId
+** Descriptions:            if certain id in net, 
+** Return:                  -1, no such device, 0-9:Num
+*********************************************************************************************************/
+int NodeManage::checkId(unsigned char *id)
+{
     
-    return 1;
+    for(int i=0; i<atomNum; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            if(id[j] == atomId[i][j])
+            {
+                if(j == 2)
+                {
+                    return i;
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+    }
+    
+    return -1;
 }
 
 /*********************************************************************************************************
 ** Function name:           checkId
-** Descriptions:            if certain id in net
+** Descriptions:            if certain id in net, 
+** Return:                  -1, no such device, 0-9:Num
 *********************************************************************************************************/
-unsigned char NodeManage::checkId(unsigned char id)
+int NodeManage::checkId(unsigned char idDevice)
 {
-    for(int i = 0; i<atomNum; i++)
+    
+    for(int i=0; i<atomNum; i++)
     {
-        if(atomId[i] == id)
+        if(idDevice == atomId[i][0])
         {
-            return i+1;
+            return i;
         }
     }
     
-    return 0;
+    return -1;
 }
-
 /*********************************************************************************************************
 ** Function name:           pushDta
 ** Descriptions:            push data to certain device
 *********************************************************************************************************/
 unsigned char NodeManage::pushDta(unsigned char id, int dta)
 {
-    unsigned char location      = checkId(id);
-    if(location==0)return 0;
+    int nId = checkId(id);
+    if(nId<0)return 0;
     
-    atomValue[location-1]       = dta;
-    getAtomValue[location-1]    = 1;
+    getAtomValue[nId] = 1;
+    atomValue[nId]    = dta;
     return 1;
 }
 
 /*********************************************************************************************************
 ** Function name:           popDta
-** Descriptions:            popDta
+** Descriptions:            return value
 *********************************************************************************************************/
-unsigned char NodeManage::popDta(unsigned char id, int *dta)
+unsigned int NodeManage::popDta(unsigned char id)
 {
-    unsigned char location      = checkId(id);
-    if(location==0)return 0;
-    *dta = atomValue[location-1];
-    getAtomValue[location-1] = 0;
-    return 1;  
+
+    getAtomValue[id] = 0;
+    return atomValue[id];
+
+}
+
+/*********************************************************************************************************
+** Function name:           postDta to yeelink
+** Descriptions:            return 1: ok 0: nok
+*********************************************************************************************************/
+int NodeManage::postDta()
+{   
+    if(yeelinkFree)
+    {
+        yeelinkFree = 0;
+        
+        if(getAtomValue[postNumNow])                    // have data
+        {
+            int dtaVal = popDta(postNumNow);
+            // post data here ?
+            yeelinkPost(atomId[postNumNow][0], dtaVal);
+        }
+        
+        if(postNumNow >= atomNum)
+        {
+            postNumNow = 0;
+        }
+    }
+}
+
+/*********************************************************************************************************
+** Function name:           postDta to yeelink
+** Descriptions:            return 1: ok 0: nok
+*********************************************************************************************************/
+void NodeManage::yeelinkAdd(unsigned char idNode, unsigned char idSensor, unsigned char idActuator)
+{
+    char tmp[20];
+    sprintf(tmp, "ss1 %d,%d,%dgg", idNode, idSensor, idActuator);
+    
+    cout << tmp << endl;
+    mySerial.println(tmp);
+}
+
+/*********************************************************************************************************
+** Function name:           postDta to yeelink
+** Descriptions:            return 1: ok 0: nok
+*********************************************************************************************************/
+void NodeManage::yeelinkPost(unsigned char idNode, unsigned int psDta)
+{
+    char tmp[20];
+    sprintf(tmp, "ss3 %d,%d.00gg", idNode, psDta);
+    cout << tmp << endl;
+    mySerial.println(tmp);
 }
 
 NodeManage NODE;

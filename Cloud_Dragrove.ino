@@ -23,9 +23,12 @@
 #include <EEPROM.h>
 #include <BeaconDrive.h>
 #include <TimerOne.h>
+#include <SoftwareSerial.h>
+#include <Streaming.h>
 
 #include "CloudApp.h"
 #include "CloudGlobalDfs.h"
+#include "NodeDeviceManage.h"
 
 unsigned char __GdtaUart[50];                   // uart data buff
 unsigned char __GdtaUartLen        = 0;         // uart data len
@@ -89,11 +92,21 @@ void rfDtaProc()
         if(__GdtaUart[FRAMEBITFRAME] == 4)                                      // other device join
         {
             // add code here
+            unsigned char tmpId[3] = {__GdtaUart[2], __GdtaUart[3], 0};
+            NODE.addDevice(tmpId);
             
         }
         else if(__GdtaUart[FRAMEBITFRAME] == 1)
         {
             // add code here
+            int tmp = 0;
+            if(__GdtaUart[FRAMEBITDATALEN] == 2)
+            {
+                tmp = __GdtaUart[FRAMEBITDATA];
+                tmp = tmp<<8;
+                tmp = tmp + __GdtaUart[FRAMEBITDATA];
+                NODE.pushDta(__GdtaUart[FRAMEBITSRCID], tmp);
+            }
         }
         __GdtaUartLen      = 0;
         __GstringComplete  = 0;

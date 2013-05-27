@@ -29,26 +29,34 @@ class NodeManage
 private:
     
     unsigned char atomNum;                                      // number of AtomDevice
-    
-    unsigned char atomId[MAXDEVICE];     
+    unsigned char atomId[MAXDEVICE][3];                         // device Id, sensor id, actuator id     
     unsigned int  atomValue[MAXDEVICE];
     bool getAtomValue[MAXDEVICE];
     
     bool yeelinkFree;                                           // if yeelink free
     long cntNodeM;                                              // count of node manage
     
+    unsigned char postNumNow;
+    
+private:
+
+    void yeelinkPost(unsigned char idNode, unsigned int psDta);
+    void yeelinkAdd(unsigned char idNode, unsigned char idSensor, unsigned char idActuator);
+    
 public:
     
     void init();
     void timerIsr();                                            // enter per 1ms
     
-    unsigned char getDeviceNum();
-    unsigned char addDevice(unsigned char id);                  // add a device
-    unsigned char delDevice(unsigned char id);                  // delete a device
-    unsigned char checkId(unsigned char id);                    // if certain id in net
+    int getDeviceNum();
+    int addDevice(unsigned char *id);                           // add a device
+    int checkId(unsigned char *id);                             // if certain id in net
+    int checkId(unsigned char idDevice);
 
     unsigned char pushDta(unsigned char id, int dta);           // push data to certain device
-    unsigned char popDta(unsigned char id, int *dta);           // po
+    unsigned int popDta(unsigned char id);                      // pop data from a certain device
+    
+    int postDta();
 
 };
 
