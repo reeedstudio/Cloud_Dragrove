@@ -41,6 +41,7 @@ unsigned char __GstringComplete    = 0;         // if get data
 void timer1ISR()
 {
     APP.appTimerIsr();                          // application isr
+    NODE.timerIsr();
 }
 
 /*********************************************************************************************************
@@ -94,7 +95,6 @@ void rfDtaProc()
             // add code here
             unsigned char tmpId[3] = {__GdtaUart[2], __GdtaUart[3], 0};
             NODE.addDevice(tmpId);
-            
         }
         else if(__GdtaUart[FRAMEBITFRAME] == 1)
         {
@@ -124,8 +124,13 @@ void setup()
     
     BcnDrive.init();
     Serial.begin(57600);                        // Serial, to send/rev data from RFBee
+    
+#if __Debug
     Serial.println("Serial init over");
+#endif
     APP.init();                                 // init application
+    
+    NODE.init();
     
     Timer1.initialize(1000);                    // set a timer of length 1ms
     Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
@@ -139,6 +144,7 @@ void setup()
 void loop()
 {
     rfDtaProc();                                // data process
+    NODE.postDta();
     mySerialEvent();                            // check serial data
 }
 

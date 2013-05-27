@@ -29,8 +29,8 @@
 SoftwareSerial mySerial(6, 7);  
 
 /*********************************************************************************************************
-** Function name:           addDevice
-** Descriptions:            add a device
+** Function name:           init
+** Descriptions:            init
 *********************************************************************************************************/
 void NodeManage::init()
 {
@@ -48,8 +48,8 @@ void NodeManage::init()
 }
 
 /*********************************************************************************************************
-** Function name:           addDevice
-** Descriptions:            add a device
+** Function name:           timerIsr
+** Descriptions:            timerIsr
 *********************************************************************************************************/
 void NodeManage::timerIsr()
 {
@@ -65,8 +65,8 @@ void NodeManage::timerIsr()
 }
 
 /*********************************************************************************************************
-** Function name:           addDevice
-** Descriptions:            add a device
+** Function name:           getDeviceNum
+** Descriptions:            getDeviceNum
 *********************************************************************************************************/
 int NodeManage::getDeviceNum()
 {
@@ -80,15 +80,44 @@ int NodeManage::getDeviceNum()
 int NodeManage::addDevice(unsigned char *id)
 {
 
-    for(int i=0; i<3; i++)
+    if(checkId(id)>-1)
     {
-        atomId[atomNum][i] = id[i];
+#if __Debug
+        cout << "Device exist already!" << endl;
+#endif
+        return -1;
     }
     
-    // add device here
-    yeelinkAdd(atomId[atomNum][0], atomId[atomNum][1], atomId[atomNum][2]);
+    int tmp = checkId(id[0]);
     
-    return atomNum++;
+    if(tmp == -1)
+    {
+#if __Debug
+        cout << "Brand new device!" << endl;
+#endif
+        for(int i=0; i<3; i++)
+        {
+            atomId[atomNum][i] = id[i];
+        }
+
+        yeelinkAdd(atomId[atomNum][0], atomId[atomNum][1], atomId[atomNum][2]);
+        
+        return atomNum++;  
+        
+    }
+    else
+    {
+#if __Debug
+        cout << "Device ID exist!" << endl;
+        for(int i=0; i<3; i++)
+        {
+            atomId[tmp][i] = id[i]; 
+        }
+        yeelinkAdd(atomId[tmp][0], atomId[tmp][1], atomId[tmp][2]);
+        return tmp;
+#endif
+    }
+
 }
 
 
@@ -99,15 +128,25 @@ int NodeManage::addDevice(unsigned char *id)
 *********************************************************************************************************/
 int NodeManage::checkId(unsigned char *id)
 {
-    
+
+#if __Debug
+    cout << "CheckID:"<< endl;
+    cout << "input:" << id[0] << ' ' << id[1] << ' ' << id[2] << endl;
+    cout << "atomNum = " << atomNum <<endl;
+#endif
     for(int i=0; i<atomNum; i++)
     {
+    
+#if __Debug
+        cout << "atomId[" << i << "] = " << atomId[i][0] << atomId[i][1] << atomId[i][2] << endl;
+#endif
         for(int j=0; j<3; j++)
         {
             if(id[j] == atomId[i][j])
             {
                 if(j == 2)
                 {
+                    cout << "id exist: " << i << endl;
                     return i;
                 }
             }
@@ -171,8 +210,12 @@ unsigned int NodeManage::popDta(unsigned char id)
 *********************************************************************************************************/
 int NodeManage::postDta()
 {   
+
+    if(atomNum <= 0)return 0;
+    
     if(yeelinkFree)
     {
+
         yeelinkFree = 0;
         
         if(getAtomValue[postNumNow])                    // have data
@@ -180,13 +223,21 @@ int NodeManage::postDta()
             int dtaVal = popDta(postNumNow);
             // post data here ?
             yeelinkPost(atomId[postNumNow][0], dtaVal);
+#if __Debug||1
+            cout << "postDta: " << postNumNow << endl;
+#endif
         }
         
+        postNumNow++;
         if(postNumNow >= atomNum)
         {
             postNumNow = 0;
         }
+        
+        return 1;
     }
+    
+    return 0;
 }
 
 /*********************************************************************************************************
@@ -197,8 +248,9 @@ void NodeManage::yeelinkAdd(unsigned char idNode, unsigned char idSensor, unsign
 {
     char tmp[20];
     sprintf(tmp, "ss1 %d,%d,%dgg", idNode, idSensor, idActuator);
-    
+#if __Debug
     cout << tmp << endl;
+#endif
     mySerial.println(tmp);
 }
 
@@ -210,7 +262,9 @@ void NodeManage::yeelinkPost(unsigned char idNode, unsigned int psDta)
 {
     char tmp[20];
     sprintf(tmp, "ss3 %d,%d.00gg", idNode, psDta);
+#if __Debug
     cout << tmp << endl;
+#endif
     mySerial.println(tmp);
 }
 

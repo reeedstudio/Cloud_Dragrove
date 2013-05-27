@@ -24,6 +24,8 @@
 
 #define SendByteToRfbee             Serial.write       // send a byte to Serial
 
+#define __Debug                       1
+
 #define TURNOFFDELAYTIME            80                  // when press the button for xx*10 ms, turn off the system
 
 // data frame
