@@ -225,25 +225,42 @@ int NodeManage::postDta()
 
         yeelinkFree = 0;
         
-        if(getAtomValue[postNumNow])                    // have data
+        int cntTimeOut = 0;
+        while(1)
         {
-        
-            BcnDrive.setLedShine(1, 200);
-            int dtaVal = popDta(postNumNow);
-            // post data here ?
-            yeelinkPost(atomId[postNumNow][0], dtaVal);
+            if(getAtomValue[postNumNow])                    // have data
+            {
+            
+                BcnDrive.setLedShine(1, 200);
+                int dtaVal = popDta(postNumNow);
+                // post data here ?
+                yeelinkPost(atomId[postNumNow][0], dtaVal);
+                postNumNow++;
+                
+                if(postNumNow >= atomNum)
+                {
+                    postNumNow = 0;
+                }
 #if __Debug
-            cout << "postDta: " << postNumNow << endl;
+                cout << "postDta: " << postNumNow << endl;
 #endif
-        }
+                return 1;
+            }
         
-        postNumNow++;
-        if(postNumNow >= atomNum)
-        {
-            postNumNow = 0;
-        }
+            postNumNow++;
+            
+            if(postNumNow >= atomNum)
+            {
+                postNumNow = 0;
+            }
+            
+            cntTimeOut++;
+            if(cntTimeOut >= atomNum)
+            {
+                return 0;
+            }
         
-        return 1;
+        }
     }
     
     return 0;

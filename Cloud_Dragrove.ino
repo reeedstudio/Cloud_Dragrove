@@ -103,8 +103,12 @@ void rfDtaProc()
             if(__GdtaUart[FRAMEBITDATALEN] == 2)
             {
                 tmp = __GdtaUart[FRAMEBITDATA];
+                
+                cout << tmp << endl;
                 tmp = tmp<<8;
-                tmp = tmp + __GdtaUart[FRAMEBITDATA];
+                cout << tmp << endl;
+                tmp = tmp + __GdtaUart[FRAMEBITDATA+1];
+                cout << tmp << endl;
                 NODE.pushDta(__GdtaUart[FRAMEBITSRCID], tmp);
 #if __Debug
                 cout << "Get Data: " << __GdtaUart[FRAMEBITSRCID] << ' ' << tmp << endl << endl;
