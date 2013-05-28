@@ -22,6 +22,7 @@
 #include <string.h>
 #include <SoftwareSerial.h>
 #include <Streaming.h>
+#include <BeaconDrive.h>
 
 #include "NodeDeviceManage.h"
 #include "CloudGlobalDfs.h"s
@@ -100,7 +101,9 @@ int NodeManage::addDevice(unsigned char *id)
             atomId[atomNum][i] = id[i];
         }
 
+        for(int i=0; i<3; i++)
         yeelinkAdd(atomId[atomNum][0], atomId[atomNum][1], atomId[atomNum][2]);
+        
         
         return atomNum++;  
         
@@ -113,6 +116,8 @@ int NodeManage::addDevice(unsigned char *id)
         {
             atomId[tmp][i] = id[i]; 
         }
+        
+        for(int i=0; i<3; i++)
         yeelinkAdd(atomId[tmp][0], atomId[tmp][1], atomId[tmp][2]);
         return tmp;
 #endif
@@ -138,7 +143,7 @@ int NodeManage::checkId(unsigned char *id)
     {
     
 #if __Debug
-        cout << "atomId[" << i << "] = " << atomId[i][0] << atomId[i][1] << atomId[i][2] << endl;
+        cout << "atomId[] = " << atomId[i][0] << ' ' << atomId[i][1] << ' ' << atomId[i][2] << endl;
 #endif
         for(int j=0; j<3; j++)
         {
@@ -146,13 +151,15 @@ int NodeManage::checkId(unsigned char *id)
             {
                 if(j == 2)
                 {
+#if __Debug
                     cout << "id exist: " << i << endl;
+#endif
                     return i;
                 }
             }
             else
             {
-                continue;
+                break;
             }
         }
     }
@@ -220,10 +227,12 @@ int NodeManage::postDta()
         
         if(getAtomValue[postNumNow])                    // have data
         {
+        
+            BcnDrive.setLedShine(1, 200);
             int dtaVal = popDta(postNumNow);
             // post data here ?
             yeelinkPost(atomId[postNumNow][0], dtaVal);
-#if __Debug||1
+#if __Debug
             cout << "postDta: " << postNumNow << endl;
 #endif
         }

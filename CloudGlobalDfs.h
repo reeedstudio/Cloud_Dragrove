@@ -18,13 +18,14 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  
 */
 #ifndef __CLOUDGLOBALDFS_H__
 #define __CLOUDGLOBALDFS_H__
 
 #define SendByteToRfbee             Serial.write       // send a byte to Serial
 
-#define __Debug                       1
+#define __Debug                     0
 
 #define TURNOFFDELAYTIME            80                  // when press the button for xx*10 ms, turn off the system
 

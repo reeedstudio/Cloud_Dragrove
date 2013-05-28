@@ -106,12 +106,15 @@ void rfDtaProc()
                 tmp = tmp<<8;
                 tmp = tmp + __GdtaUart[FRAMEBITDATA];
                 NODE.pushDta(__GdtaUart[FRAMEBITSRCID], tmp);
+#if __Debug
+                cout << "Get Data: " << __GdtaUart[FRAMEBITSRCID] << ' ' << tmp << endl << endl;
+#endif
             }
         }
         __GdtaUartLen      = 0;
         __GstringComplete  = 0;
         
-        BcnDrive.setLedShine(1, 20);
+        BcnDrive.setLedShine(1, 5);
     }
 }
 
