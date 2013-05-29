@@ -26,7 +26,6 @@
 #include <SoftwareSerial.h>
 #include <Streaming.h>
 
-#include "CloudApp.h"
 #include "CloudGlobalDfs.h"
 #include "NodeDeviceManage.h"
 
@@ -40,7 +39,6 @@ unsigned char __GstringComplete    = 0;         // if get data
 *********************************************************************************************************/
 void timer1ISR()
 {
-    APP.appTimerIsr();                          // application isr
     BcnDrive.ledIsr();
     NODE.timerIsr();
 }
