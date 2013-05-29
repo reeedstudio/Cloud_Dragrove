@@ -41,6 +41,7 @@ unsigned char __GstringComplete    = 0;         // if get data
 void timer1ISR()
 {
     APP.appTimerIsr();                          // application isr
+    BcnDrive.ledIsr();
     NODE.timerIsr();
 }
 
@@ -135,7 +136,8 @@ void setup()
 #if __Debug
     Serial.println("Serial init over");
 #endif
-    APP.init();                                 // init application
+
+    //APP.init();                                 // init application
     
     NODE.init();
     

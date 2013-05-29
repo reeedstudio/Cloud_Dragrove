@@ -46,7 +46,6 @@ void CloudApp::init()
 *********************************************************************************************************/
 void CloudApp::appTimerIsr()
 {
-    BcnDrive.ledIsr();
     workStateCnt++;
 }
 
