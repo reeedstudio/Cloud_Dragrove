@@ -108,7 +108,16 @@ void rfDtaProc()
                 cout << tmp << endl;
                 tmp = tmp + __GdtaUart[FRAMEBITDATA+1];
                 cout << tmp << endl;
-                NODE.pushDta(__GdtaUart[FRAMEBITSRCID], tmp);
+                
+                if(NODE.checkId(__GdtaUart[2]) != -1)
+                {
+                    NODE.pushDta(__GdtaUart[FRAMEBITSRCID], tmp);
+                }
+                else
+                {
+                    unsigned char tmpId[3] = {__GdtaUart[2], __GdtaUart[3], 0};
+                    NODE.addDevice(tmpId);
+                }
 #if __Debug
                 cout << "Get Data: " << __GdtaUart[FRAMEBITSRCID] << ' ' << tmp << endl << endl;
 #endif
