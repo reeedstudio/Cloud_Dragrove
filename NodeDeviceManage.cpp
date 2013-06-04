@@ -101,9 +101,8 @@ int NodeManage::addDevice(unsigned char *id)
             atomId[atomNum][i] = id[i];
         }
 
-        for(int i=0; i<3; i++)
+        for(int i=0; i<10; i++)
         yeelinkAdd(atomId[atomNum][0], atomId[atomNum][1], atomId[atomNum][2]);
-        
         
         return atomNum++;  
         
@@ -117,7 +116,7 @@ int NodeManage::addDevice(unsigned char *id)
             atomId[tmp][i] = id[i]; 
         }
         
-        for(int i=0; i<3; i++)
+        for(int i=0; i<10; i++)
         yeelinkAdd(atomId[tmp][0], atomId[tmp][1], atomId[tmp][2]);
         return tmp;
 #endif
