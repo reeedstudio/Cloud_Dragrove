@@ -21,10 +21,12 @@
 */
 #include <Arduino.h>
 #include <EEPROM.h>
-#include <BeaconDrive.h>
-#include <TimerOne.h>
 #include <SoftwareSerial.h>
-#include <Streaming.h>
+//#include <BeaconDrive.h>
+
+#include <BeaconSensor.h>
+#include <Wire.h>
+//#include <TimerOne.h>
 
 #include "CloudGlobalDfs.h"
 #include "NodeDeviceManage.h"
@@ -33,15 +35,12 @@ unsigned char __GdtaUart[50];                   // uart data buff
 unsigned char __GdtaUartLen        = 0;         // uart data len
 unsigned char __GstringComplete    = 0;         // if get data
 
-/*********************************************************************************************************
-** Function name:           timer1ISR
-** Descriptions:            timer interrupt service 
-*********************************************************************************************************/
+/*
 void timer1ISR()
 {
     BcnDrive.ledIsr();
     NODE.timerIsr();
-}
+}*/
 
 /*********************************************************************************************************
 ** Function name:           checkGoodDta
@@ -103,11 +102,8 @@ void rfDtaProc()
             {
                 tmp = __GdtaUart[FRAMEBITDATA];
                 
-                cout << tmp << endl;
                 tmp = tmp<<8;
-                cout << tmp << endl;
                 tmp = tmp + __GdtaUart[FRAMEBITDATA+1];
-                cout << tmp << endl;
                 
                 if(NODE.checkId(__GdtaUart[2]) != -1)
                 {
@@ -118,15 +114,11 @@ void rfDtaProc()
                     unsigned char tmpId[3] = {__GdtaUart[2], __GdtaUart[3], 0};
                     NODE.addDevice(tmpId);
                 }
-#if __Debug
-                cout << "Get Data: " << __GdtaUart[FRAMEBITSRCID] << ' ' << tmp << endl << endl;
-#endif
             }
         }
         __GdtaUartLen      = 0;
         __GstringComplete  = 0;
-        
-        BcnDrive.setLedShine(1, 5);
+
     }
 }
 
@@ -137,8 +129,9 @@ void rfDtaProc()
 void setup()
 {
     
-    BcnDrive.init();
+    //BcnDrive.init();
     Serial.begin(57600);                        // Serial, to send/rev data from RFBee
+    pinMode(13, OUTPUT);
     
 #if __Debug
     Serial.println("Serial init over");
@@ -148,8 +141,8 @@ void setup()
     
     NODE.init();
     
-    Timer1.initialize(1000);                    // set a timer of length 1ms
-    Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
+    //Timer1.initialize(1000);                    // set a timer of length 1ms
+    //Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
 
 }
 

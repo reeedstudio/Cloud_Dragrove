@@ -25,13 +25,7 @@
 
 #define SendByteToRfbee             Serial.write       // send a byte to Serial
 
-#define __Debug                     0 
-
-#if __Debug
-#define DBG(X)                      Serial.println(X)
-#else
-#define DBG(X)
-#endif
+#define __Debug                     1 
 
 #define TURNOFFDELAYTIME            80                  // when press the button for xx*10 ms, turn off the system
 

@@ -34,19 +34,23 @@ private:
     bool getAtomValue[MAXDEVICE];
     
     bool yeelinkFree;                                           // if yeelink free
-    long cntNodeM;                                              // count of node manage
     
     unsigned char postNumNow;
+
+    unsigned char ifSetSensor;                                  // if set sensor of cloud
+    unsigned char freqCloud;                                    // cloud sensor broadcase freq
+    unsigned char sensorIdCloud;                                // cloud sensor id
     
 private:
 
     void yeelinkPost(unsigned char idNode, unsigned int psDta);
     void yeelinkAdd(unsigned char idNode, unsigned char idSensor, unsigned char idActuator);
+    unsigned int popDta(unsigned char id);                      // pop data from a certain device
+    void cloudDta();                                            // cloud data proc
     
 public:
     
     void init();
-    void timerIsr();                                            // enter per 1ms
     
     int getDeviceNum();
     int addDevice(unsigned char *id);                           // add a device
@@ -54,9 +58,10 @@ public:
     int checkId(unsigned char idDevice);
 
     unsigned char pushDta(unsigned char id, int dta);           // push data to certain device
-    unsigned int popDta(unsigned char id);                      // pop data from a certain device
     
     int postDta();
+
+    void addCloudSensor(unsigned char id, unsigned char freq);                      // add cloud sensor
 
 };
 

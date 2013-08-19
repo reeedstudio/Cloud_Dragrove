@@ -19,13 +19,19 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+#include <Arduino.h>
 #include <string.h>
 #include <SoftwareSerial.h>
 #include <Streaming.h>
 #include <BeaconDrive.h>
+#include <EEPROM.h>
+
+#include <BeaconSensor.h>
+#include <Wire.h>
+#include <Ultrasonic.h>
 
 #include "NodeDeviceManage.h"
-#include "CloudGlobalDfs.h"s
+#include "CloudGlobalDfs.h"
 
 SoftwareSerial mySerial(6, 7);  
 
@@ -36,6 +42,7 @@ SoftwareSerial mySerial(6, 7);
 void NodeManage::init()
 {
 
+    mySerial.begin(9600);
     atomNum     = 0;
     postNumNow  = 0;
     memset(atomId, 0, MAXDEVICE*3);
@@ -43,25 +50,38 @@ void NodeManage::init()
     memset(getAtomValue, 0, MAXDEVICE);
     
     yeelinkFree = 1;                                                // if yeelink free
-    cntNodeM    = 0;                                                // count of node manage
-    
-    mySerial.begin(9600);
-}
 
-/*********************************************************************************************************
-** Function name:           timerIsr
-** Descriptions:            timerIsr
-*********************************************************************************************************/
-void NodeManage::timerIsr()
-{
-    
-    cntNodeM++;
-    
-    if(!yeelinkFree && cntNodeM > 12000)
+#if 0
+    ifSetSensor = EEPROM.read(0);
+    if(ifSetSensor)
     {
-        cntNodeM    = 0;
-        yeelinkFree = 1;
+#if __Debug
+        Serial.println("cloud sensor configed");
+#endif
+
+        freqCloud   = EEPROM.read(2);
+        sensorIdCloud = EEPROM.read(1);
+
+        unsigned char dta[3] = {0, sensorIdCloud, 0};
+        addDevice(dta);
     }
+    else
+    {
+#if __Debug
+        Serial.println("cloud sensor had not been configed");
+#endif
+    }
+#else
+
+
+
+    ifSetSensor = 1;
+    freqCloud = 1;
+    sensorIdCloud = 48;
+
+    unsigned char dta[3] = {0, sensorIdCloud, 0};
+    addDevice(dta);
+#endif
 
 }
 
@@ -84,7 +104,8 @@ int NodeManage::addDevice(unsigned char *id)
     if(checkId(id)>-1)
     {
 #if __Debug
-        cout << "Device exist already!" << endl;
+        Serial.println("Device exist already");
+        
 #endif
         return -1;
     }
@@ -93,9 +114,8 @@ int NodeManage::addDevice(unsigned char *id)
     
     if(tmp == -1)
     {
-#if __Debug
-        cout << "Brand new device!" << endl;
-#endif
+        DBG("Brand new device!");
+
         for(int i=0; i<3; i++)
         {
             atomId[atomNum][i] = id[i];
@@ -103,14 +123,12 @@ int NodeManage::addDevice(unsigned char *id)
 
         for(int i=0; i<10; i++)
         yeelinkAdd(atomId[atomNum][0], atomId[atomNum][1], atomId[atomNum][2]);
-        
         return atomNum++;  
         
     }
     else
     {
-#if __Debug
-        cout << "Device ID exist!" << endl;
+        DBG("Devide ID exist");
         for(int i=0; i<3; i++)
         {
             atomId[tmp][i] = id[i]; 
@@ -119,7 +137,6 @@ int NodeManage::addDevice(unsigned char *id)
         for(int i=0; i<10; i++)
         yeelinkAdd(atomId[tmp][0], atomId[tmp][1], atomId[tmp][2]);
         return tmp;
-#endif
     }
 
 }
@@ -133,26 +150,15 @@ int NodeManage::addDevice(unsigned char *id)
 int NodeManage::checkId(unsigned char *id)
 {
 
-#if __Debug
-    cout << "CheckID:"<< endl;
-    cout << "input:" << id[0] << ' ' << id[1] << ' ' << id[2] << endl;
-    cout << "atomNum = " << atomNum <<endl;
-#endif
     for(int i=0; i<atomNum; i++)
     {
     
-#if __Debug
-        cout << "atomId[] = " << atomId[i][0] << ' ' << atomId[i][1] << ' ' << atomId[i][2] << endl;
-#endif
         for(int j=0; j<3; j++)
         {
             if(id[j] == atomId[i][j])
             {
                 if(j == 2)
                 {
-#if __Debug
-                    cout << "id exist: " << i << endl;
-#endif
                     return i;
                 }
             }
@@ -211,6 +217,44 @@ unsigned int NodeManage::popDta(unsigned char id)
 }
 
 /*********************************************************************************************************
+** Function name:           cloudDta
+** Descriptions:            get cloud sensor data
+*********************************************************************************************************/
+void NodeManage::cloudDta()
+{
+    
+    if(!ifSetSensor)return ;
+
+    static long t1 = millis();
+
+    if(millis() - t1 > 10000)
+    {
+        t1 = millis();
+        int dtaSensor = 0;
+        SENSOR.init(sensorIdCloud);
+
+        unsigned char dta[10];
+        SENSOR.getSensor(dta);
+
+        if(dta[0] == 1)
+        {
+            dtaSensor = dta[1];
+        }
+        else if(dta[0] == 2)
+        {
+            dtaSensor = dta[1];
+            dtaSensor = dtaSensor<<8;
+            dtaSensor += dta[2];
+        }
+#if __Debug
+
+        Serial.print("push Cloud Dta: ");
+        Serial.println(dtaSensor);
+#endif
+        pushDta(0, dtaSensor);
+    }
+}
+/*********************************************************************************************************
 ** Function name:           postDta to yeelink
 ** Descriptions:            return 1: ok 0: nok
 *********************************************************************************************************/
@@ -219,6 +263,20 @@ int NodeManage::postDta()
 
     if(atomNum <= 0)return 0;
     
+    cloudDta();
+
+    static long t1 = millis();
+
+    if(millis()-t1 > 12000)
+    {
+        yeelinkFree = 1;
+        t1 = millis();
+    }
+    else
+    {
+        return 0;
+    }
+
     if(yeelinkFree)
     {
 
@@ -230,7 +288,11 @@ int NodeManage::postDta()
             if(getAtomValue[postNumNow])                    // have data
             {
             
-                BcnDrive.setLedShine(1, 200);
+                LEDON();
+                delay(5);
+                LEDOFF();
+           
+
                 int dtaVal = popDta(postNumNow);
                 // post data here ?
                 yeelinkPost(atomId[postNumNow][0], dtaVal);
@@ -241,7 +303,9 @@ int NodeManage::postDta()
                     postNumNow = 0;
                 }
 #if __Debug
-                cout << "postDta: " << postNumNow << endl;
+                Serial.print("post Dta: ");
+                Serial.println(postNumNow);
+
 #endif
                 return 1;
             }
@@ -253,6 +317,7 @@ int NodeManage::postDta()
                 postNumNow = 0;
             }
             
+
             cntTimeOut++;
             if(cntTimeOut >= atomNum)
             {
@@ -274,7 +339,7 @@ void NodeManage::yeelinkAdd(unsigned char idNode, unsigned char idSensor, unsign
     char tmp[20];
     sprintf(tmp, "ss1 %d,%d,%dgg", idNode, idSensor, idActuator);
 #if __Debug
-    cout << tmp << endl;
+    Serial.println(tmp);
 #endif
     mySerial.println(tmp);
 }
@@ -288,9 +353,28 @@ void NodeManage::yeelinkPost(unsigned char idNode, unsigned int psDta)
     char tmp[20];
     sprintf(tmp, "ss3 %d,%d.00gg", idNode, psDta);
 #if __Debug
-    cout << tmp << endl;
+    Serial.println(tmp);
 #endif
     mySerial.println(tmp);
+}
+
+/*********************************************************************************************************
+** Function name:           addCloudSensor 
+** Descriptions:            add a cloud sensor , write to eeprom: 
+                            1: if set
+                            2: freq
+                            3: sensor id
+*********************************************************************************************************/
+void NodeManage::addCloudSensor(unsigned char id, unsigned char freq)
+{
+
+    ifSetSensor = 1;
+    freqCloud   = freq;
+    sensorIdCloud = id;
+
+    EEPROM.write(1, ifSetSensor);
+    EEPROM.write(2, freqCloud);
+    EEPROM.write(3, sensorIdCloud);
 }
 
 NodeManage NODE;
