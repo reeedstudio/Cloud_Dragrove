@@ -51,37 +51,38 @@ void NodeManage::init()
     
     yeelinkFree = 1;                                                // if yeelink free
 
-#if 0
-    ifSetSensor = EEPROM.read(0);
-    if(ifSetSensor)
-    {
-#if __Debug
-        Serial.println("cloud sensor configed");
+#if 1           // just test
+
+    EEPROM.write(0, 0x55);
+    EEPROM.write(1, 48);
+    EEPROM.write(2, 1);
 #endif
+
+    ifSetSensor = EEPROM.read(0);
+    if(ifSetSensor = 0x55)
+    {
+        DBG("cloud sensor configed");
 
         freqCloud   = EEPROM.read(2);
         sensorIdCloud = EEPROM.read(1);
 
+        if(sensorIdCloud != 48)
+        {
+            while(1)
+            {
+                LEDON();
+                delay(200);
+                LEDOFF();
+                delay(200);
+            }
+        }
         unsigned char dta[3] = {0, sensorIdCloud, 0};
         addDevice(dta);
     }
     else
     {
-#if __Debug
-        Serial.println("cloud sensor had not been configed");
-#endif
+        DBG("cloud sensor had not beed configed");
     }
-#else
-
-
-
-    ifSetSensor = 1;
-    freqCloud = 1;
-    sensorIdCloud = 48;
-
-    unsigned char dta[3] = {0, sensorIdCloud, 0};
-    addDevice(dta);
-#endif
 
 }
 
@@ -223,7 +224,7 @@ unsigned int NodeManage::popDta(unsigned char id)
 void NodeManage::cloudDta()
 {
     
-    if(!ifSetSensor)return ;
+    if(ifSetSensor != 0x55)return ;
 
     static long t1 = millis();
 

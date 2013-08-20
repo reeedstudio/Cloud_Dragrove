@@ -22,11 +22,8 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <SoftwareSerial.h>
-//#include <BeaconDrive.h>
-
 #include <BeaconSensor.h>
 #include <Wire.h>
-//#include <TimerOne.h>
 
 #include "CloudGlobalDfs.h"
 #include "NodeDeviceManage.h"
@@ -34,13 +31,6 @@
 unsigned char __GdtaUart[50];                   // uart data buff
 unsigned char __GdtaUartLen        = 0;         // uart data len
 unsigned char __GstringComplete    = 0;         // if get data
-
-/*
-void timer1ISR()
-{
-    BcnDrive.ledIsr();
-    NODE.timerIsr();
-}*/
 
 /*********************************************************************************************************
 ** Function name:           checkGoodDta
@@ -90,13 +80,11 @@ void rfDtaProc()
     {
         if(__GdtaUart[FRAMEBITFRAME] == 4)                                      // other device join
         {
-            // add code here
             unsigned char tmpId[3] = {__GdtaUart[2], __GdtaUart[3], 0};
             NODE.addDevice(tmpId);
         }
         else if(__GdtaUart[FRAMEBITFRAME] == 1)
         {
-            // add code here
             int tmp = 0;
             if(__GdtaUart[FRAMEBITDATALEN] == 2)
             {
@@ -129,7 +117,6 @@ void rfDtaProc()
 void setup()
 {
     
-    //BcnDrive.init();
     Serial.begin(57600);                        // Serial, to send/rev data from RFBee
     pinMode(13, OUTPUT);
     
@@ -137,13 +124,8 @@ void setup()
     Serial.println("Serial init over");
 #endif
 
-    //APP.init();                                 // init application
-    
     NODE.init();
     
-    //Timer1.initialize(1000);                    // set a timer of length 1ms
-    //Timer1.attachInterrupt(timer1ISR);          // attach the service routine here
-
 }
 
 /*********************************************************************************************************
